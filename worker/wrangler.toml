@@ -1,0 +1,24 @@
+# Anasa guest manual API (damage check-in reports). No secrets in this file.
+# Owner key: set with `wrangler secret put OWNER_KEY` (basic protection only).
+name = "anasa-manual-api"
+main = "src/index.js"
+compatibility_date = "2026-10-27"
+account_id = "7abc23ee48c8bafd3219ead407fef1e6"
+workers_dev = true
+preview_urls = false
+
+[vars]
+ALLOWED_ORIGINS = "https://iceto3.github.io"
+API_VERSION = "1"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "anasa-manual-db"
+database_id = "e861f53a-4556-4cf7-97b0-486a41158754"
+
+# Photo upload (future). R2 is not enabled for the current API token.
+# When R2 is available: create a bucket (e.g. `wrangler r2 bucket create anasa-manual-photos`),
+# uncomment below and redeploy. The PUT /api/reports/:id/photos/:photoId endpoint then starts working.
+# [[r2_buckets]]
+# binding = "PHOTOS"
+# bucket_name = "anasa-manual-photos"

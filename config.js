@@ -12,5 +12,13 @@ window.APP_CONFIG = {
   defaultLang: "en",
   languages: ["en", "el", "bg", "de"],   // order shown in the language switcher
   messageLang: "en",               // language of the WhatsApp messages the OWNER receives (guest free text is sent as typed)
-  ownerPin: "0000"                 // TBD: demo PIN for the hidden Owner settings — change before real use
+  ownerPin: "0000",                // TBD: demo PIN for the hidden Owner settings — change before real use
+  /* v9: backend for damage check-in reports (Cloudflare Worker + D1, source in /worker).
+   * ownerKey stays EMPTY in this public repo: the owner types it once in Owner settings (saved on that device only).
+   * It is basic protection for the owner list, not real security. */
+  api: {
+    base: "https://anasa-manual-api.vidrichka.workers.dev",
+    ownerKey: "",
+    timeoutMs: 8000
+  }
 };

@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f7f4">
+  <meta name="theme-color" content="#f7f7f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b1420" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <script>/* v9: apply the saved theme before first paint (Auto / Light / Dark) */
+    (function () { var p = "auto"; try { p = JSON.parse(localStorage.getItem("theme")) || "auto"; } catch (e) {}
+      var d = p === "dark" || (p !== "light" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.setAttribute("data-theme", d ? "dark" : "light"); })();</script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,6 +30,7 @@
       <img class="logo" src="logo-badge.png" alt="Anasa Experiences" width="1024" height="1024">
     </button>
     <div class="nav-title" id="navTitle"></div>
+    <button class="theme-btn" id="themeBtn" aria-label="Theme"></button>
     <div class="lang">
       <button class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu"></button>
       <div class="lang-menu" id="langMenu" role="menu" hidden></div>

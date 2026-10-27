@@ -94,6 +94,10 @@
   - Check-in & check-out: times (placeholders) and what to expect (draft)
   - House rules on board (draft)
   - Local tips: bays, tavernas, provisions, weather (example placeholders only)
+  - Check-in: note existing damage (own card on home): tap a top / starboard / port drawing of the boat to drop numbered pins,
+    pick a type (scratch, dent/ding, torn, stain, not working, missing, other), an auto-suggested area, a short note and optional photos;
+    items without a location; finish with name, charter week and "I inspected the boat…", then saved online + WhatsApp summary
+  - (Later) Check-out damage report, same flow with kind "checkout"
 - Contact us (all open WhatsApp to the owner with a prefilled message)
   - Report a breakage (no charge, just so we can replace it)
   - Report a problem (category + description)

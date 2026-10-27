@@ -44,7 +44,8 @@ BOATS.anasa = {
       { id: "wifi", type: "info", special: "wifi", icon: "wifi" },
       { id: "checkin", type: "info", special: "checkin", icon: "clock" },
       { id: "house-rules", type: "info", special: "rules", icon: "list" },
-      { id: "local-tips", type: "info", special: "tips", icon: "pin" }
+      { id: "local-tips", type: "info", special: "tips", icon: "pin" },
+      { id: "damage-checkin", type: "form", special: "damage", icon: "clipboard" }   // v9: shown as its own home card, not a tile
     ] },
     { id: "contact", group: "contact", icon: "chat", topics: [
       { id: "report-problem", type: "form", special: "problem", icon: "wrench" },

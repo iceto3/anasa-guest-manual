@@ -1,7 +1,7 @@
-/* Anasa Guest Manual — v8. Vanilla JS, no build step, works offline.
+/* Anasa Guest Manual — v9 (dark theme + damage check-in). Vanilla JS, no build step, works offline.
  *
  * DATA (loaded before this file, see index.html):
- *   config.js        APP_CONFIG (default boat/language, languages, message language, owner PIN)
+ *   config.js        APP_CONFIG (default boat/language, languages, message language, owner PIN, api)
  *   lang/<code>.js   I18N[code]  — UI strings + manual text per language (fallback: English)
  *   boats/<id>.js    BOATS[id]   — boat facts, contacts, radio, Wi-Fi, sections/topics structure
  * Pick a boat with ?boat=<id> (default APP_CONFIG.defaultBoat). See README.md.
@@ -156,6 +156,14 @@ const P = {
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>',
   locate: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
   key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/>',
+  auto: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  clipboard: '<rect x="5" y="4.5" width="14" height="17" rx="2.5"/><path d="M9 4.5V3.5h6v1"/><rect x="9" y="2.8" width="6" height="3.4" rx="1.2"/><path d="M8.5 11.5l2 2 4-4M8.5 17h7"/>',
+  camera: '<path d="M4 8.5A2 2 0 0 1 6 6.5h1.8L9.3 4.5h5.4l1.5 2H18a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/>',
+  trash: '<path d="M4.5 7h15M10 3.8h4M6.5 7l.9 12.2a2 2 0 0 0 2 1.8h5.2a2 2 0 0 0 2-1.8L17.5 7M10 11v6M14 11v6"/>',
+  share: '<path d="M12 3.5v12M7.5 8L12 3.5 16.5 8"/><path d="M5 12.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6.5"/>',
+  cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5z"/><path d="M12 16.5v-5.5M9.8 13.2 12 11l2.2 2.2"/>',
   bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'
 };
 const ic = (name, cls = "") => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[name] || P.guide}</svg>`;
@@ -167,6 +175,7 @@ const $app = document.getElementById("app"), $nav = document.getElementById("nav
       $brand = document.getElementById("brand"), $title = document.getElementById("navTitle"), $toast = document.getElementById("toast"),
       $langBtn = document.getElementById("langBtn"), $langMenu = document.getElementById("langMenu"), $sos = document.getElementById("sosBtn");
 $back.innerHTML = ic("back");
+
 function toast(msg) { $toast.textContent = msg; $toast.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => $toast.classList.remove("show"), 2400); }
 let query = "";
 
@@ -177,6 +186,7 @@ function renderChrome() {
   $sos.setAttribute("aria-label", t("emergency"));
   $langBtn.innerHTML = `${ic("globe")}<span>${esc(L().short)}</span>`;
   $langBtn.setAttribute("aria-label", `${t("language")}: ${L().name}`);
+  if (typeof applyTheme === "function") applyTheme();
   $langMenu.innerHTML = `<div class="lm-head">${esc(t("language"))}</div>` + LANGS.map(c => `
     <button role="menuitemradio" aria-checked="${c === lang}" data-lang="${c}"><span class="lm-code">${esc(I18N[c].short)}</span>
       <span class="lm-name">${esc(I18N[c].name)}</span>${c === lang ? ic("check") : ""}</button>`).join("");
@@ -305,11 +315,14 @@ function renderHomeBody() {
   const stay = SECTIONS.find(s => s.group === "stay");
   const contact = (BOAT.contactLinks || []).map(topicById).filter(Boolean);
   const man = MANUAL_SECS();
+  const dmg = ALL.find(x => x.special === "damage"), dmgDraftN = ((store.get(`damage:${BOAT.id}:draft`) || {}).items || []).length;
   $b.innerHTML = `
     <a class="sos-card" href="#/emergency" id="sosCard"><span class="sos-badge">SOS</span>
       <span class="tx"><b>${esc(t("sosCardTitle"))}</b><small>${esc(t("sosCardSub"))}</small></span><span class="chev">${ic("chev")}</span></a>
+    ${dmg ? `<a class="dmg-card" href="#/t/${dmg.id}" id="dmgCard"><span class="ci">${ic("clipboard")}</span>
+      <span class="tx"><b>${esc(t("dmgCardTitle"))}</b><small>${esc(dmgDraftN ? t("items", { n: dmgDraftN }) + " · " + t("continue") : t("dmgCardSub"))}</small></span><span class="chev">${ic("chev")}</span></a>` : ""}
     ${stay ? `<div class="sec-head"><h2>${esc(stay.name)}</h2><span>${esc(BOAT.name)}</span></div>
-    <div class="tiles">${stay.topics.map(x => `<a class="tile" href="#/t/${x.id}"><span class="ic">${ic(tIcon(x))}</span>
+    <div class="tiles">${stay.topics.filter(x => x.special !== "damage").map(x => `<a class="tile" href="#/t/${x.id}"><span class="ic">${ic(tIcon(x))}</span>
       <span class="t">${esc(x.short || x.title)}</span><span class="m">${stayMeta(x)}</span></a>`).join("")}</div>` : ""}
     ${contact.length ? `<div class="sec-head"><h2>${esc(t("contactUs"))}</h2><span>${esc(t("viaWhatsApp"))}</span></div>
     <ul class="list">${contact.map(x => `<li><a class="row" href="#/t/${x.id}"><span class="ic">${ic(tIcon(x))}</span>
@@ -345,7 +358,8 @@ function viewSection(id) {
 const SPECIAL = {
   breakage: [breakageUI, bindBreakage], mayday: [() => maydayUI(true), null], wifi: [wifiUI, bindWifi],
   checkin: [checkinUI, null], rules: [rulesUI, null], tips: [tipsUI, null],
-  problem: [problemUI, bindProblem], ask: [askUI, bindAsk], feedback: [feedbackUI, bindFeedback]
+  problem: [problemUI, bindProblem], ask: [askUI, bindAsk], feedback: [feedbackUI, bindFeedback],
+  damage: [() => damageUI(), () => bindDamage()]
 };
 function viewTopic(id) {
   const x = topicById(id); if (!x) return viewNotFound();
@@ -552,7 +566,7 @@ function viewEmergency() {
 /* SOS: confirm sheet with press-and-hold → geolocation → WhatsApp */
 const HOLD_MS = 2000;
 let sheetEl = null;
-function closeSheet() { if (!sheetEl) return; const el = sheetEl; sheetEl = null; el.classList.remove("open"); setTimeout(() => el.remove(), 220); document.body.classList.remove("no-scroll"); }
+function closeSheet() { if (!sheetEl) return; const el = sheetEl; sheetEl = null; if (el._onClose) try { el._onClose(); } catch {} el.classList.remove("open"); setTimeout(() => el.remove(), 220); document.body.classList.remove("no-scroll"); }
 function openSosSheet() {
   closeSheet();
   const el = document.createElement("div");
@@ -658,7 +672,7 @@ function viewOwner() {
       ${cfgRow("Wi-Fi · " + t("wifiNetwork"), w.ssid, "ssid")}${cfgRow("Wi-Fi · " + t("wifiPassword"), w.password, "password")}
       ${cfgRow(t("checkIn"), s.checkIn, "checkIn")}${cfgRow(t("checkOut"), s.checkOut, "checkOut")}
     </div><p class="hint">${esc(t("configNote", { id: BOAT.id }))}</p></div>
-    <div class="soon-card"><div class="ci">${ic("gear")}</div><h3>${esc(t("moreOwnerSoon"))}</h3><p>${esc(t("moreOwnerSoonText"))}</p></div>
+    ${ownerDamageUI()}
     <div class="block"><button class="btn ghost" id="lockOwner">${ic("lock")}${esc(t("lock"))}</button></div>`;
   document.getElementById("saveOwner").onclick = () => {
     const v = document.getElementById("wa").value.trim();
@@ -668,6 +682,7 @@ function viewOwner() {
   };
   document.getElementById("resetOwner").onclick = () => { store.del(WA_KEY); store.del("owner:whatsapp"); toast(t("saved")); viewOwner(); };
   document.getElementById("lockOwner").onclick = () => { ownerUnlocked = false; location.hash = "#/"; };
+  bindOwnerDamage();
 }
 function viewPin() {
   setNav({ mode: "page", title: t("ownerAccess") });
@@ -694,6 +709,476 @@ function viewNotFound() {
   $app.innerHTML = `<div class="soon-card"><div class="ci">${ic("search")}</div><h3>${esc(t("notFound"))}</h3><p><a href="#/">${esc(t("backToManual"))}</a></p></div>`;
 }
 
+/* ================= v9: Theme (Auto / Light / Dark) ================= */
+const THEMES = ["auto", "light", "dark"];
+const $themeBtn = document.getElementById("themeBtn");
+const darkMq = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : { matches: false, addEventListener() {} };
+let themePref = THEMES.includes(store.get("theme")) ? store.get("theme") : "auto";
+const effectiveTheme = () => themePref === "auto" ? (darkMq.matches ? "dark" : "light") : themePref;
+function applyTheme() {
+  const eff = effectiveTheme();
+  document.documentElement.dataset.theme = eff;
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute("content", eff === "dark" ? "#0b1420" : "#f7f7f4"));
+  if ($themeBtn) {
+    $themeBtn.innerHTML = ic(themePref === "auto" ? "auto" : themePref === "dark" ? "moon" : "sun");
+    const lbl = `${t("theme")}: ${t("theme_" + themePref)}`;
+    $themeBtn.setAttribute("aria-label", lbl); $themeBtn.title = lbl; $themeBtn.dataset.pref = themePref;
+  }
+}
+function cycleTheme() {
+  themePref = THEMES[(THEMES.indexOf(themePref) + 1) % THEMES.length];
+  store.set("theme", themePref); applyTheme(); toast(t("themeNow", { m: t("theme_" + themePref) }));
+}
+$themeBtn?.addEventListener("click", cycleTheme);
+(darkMq.addEventListener ? darkMq.addEventListener.bind(darkMq, "change") : darkMq.addListener?.bind(darkMq))?.(() => { if (themePref === "auto") applyTheme(); });
+
+/* ================= v9: Damage check-in =================
+ * Draft (localStorage damage:<boat>:draft) → photos in IndexedDB (never uploaded yet) → POST /api/reports (Worker + D1)
+ * → WhatsApp summary + optional navigator.share of the photos. Offline: the report waits in the IndexedDB "queue".
+ * Data model: kind "checkin" now, "checkout" later. Photo upload later = PUT /api/reports/:id/photos/:photoId (see worker/README). */
+const APP_VERSION = "anasa-manual-v9";
+const API = (CFG.api && CFG.api.base || "").replace(/\/+$/, "");
+const DMG_TYPES = ["scratch", "dent", "torn", "stain", "notWorking", "missing", "other"];
+const ZONES = ["bowPort", "bowStbd", "hullPort", "hullStbd", "sternPort", "sternStbd", "trampoline", "deck", "coachroof", "saloon",
+  "cockpit", "helm", "mast", "portCabins", "stbdCabins", "galley", "heads", "dinghy", "equipment", "other"];
+const MAX_PHOTOS = 4;
+const DKEY = () => `damage:${BOAT.id}:draft`, LKEY = () => `damage:${BOAT.id}:last`;
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2, 12)).replace(/[^A-Za-z0-9_-]/g, "");
+const isoDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const addDays = (n, from = new Date()) => { const d = new Date(from); d.setDate(d.getDate() + n); return d; };
+const fmtDate = (s, code = lang) => { try { return new Date(s + "T12:00:00").toLocaleDateString((I18N[code] || I18N.en).locale, { day: "numeric", month: "short", year: "numeric" }); } catch { return s; } };
+const zoneLabel = (z, code) => t("zone_" + (ZONES.includes(z) ? z : "other"), {}, code);
+function newDraft() {
+  return { id: uid(), boat: BOAT.id, kind: "checkin", createdAt: new Date().toISOString(), items: [], name: "",
+    from: isoDate(new Date()), to: isoDate(addDays(7)), confirmed: false };
+}
+function getDraft() { let d = store.get(DKEY()); if (!d || !d.id || !Array.isArray(d.items)) { d = newDraft(); store.set(DKEY(), d); } return d; }
+const saveDraft = d => store.set(DKEY(), d);
+const photoCount = d => d.items.reduce((a, it) => a + (it.photos || []).length, 0);
+
+/* IndexedDB: "photos" {id, reportId, itemId, blob, type, width, height, bytes, createdAt, status:"device"} and "queue" {id, payload, tries, lastError} */
+let idbP = null;
+function idb() {
+  return idbP || (idbP = new Promise((res, rej) => {
+    if (!("indexedDB" in window)) return rej(new Error("IndexedDB unavailable"));
+    const r = indexedDB.open("anasa-manual", 1);
+    r.onupgradeneeded = () => { const db = r.result;
+      if (!db.objectStoreNames.contains("photos")) db.createObjectStore("photos", { keyPath: "id" });
+      if (!db.objectStoreNames.contains("queue")) db.createObjectStore("queue", { keyPath: "id" }); };
+    r.onsuccess = () => res(r.result); r.onerror = () => { idbP = null; rej(r.error); };
+  }));
+}
+async function idbDo(name, mode, fn) {
+  const db = await idb();
+  return new Promise((res, rej) => { const tx = db.transaction(name, mode), req = fn(tx.objectStore(name));
+    tx.oncomplete = () => res(req && req.result); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error); });
+}
+const idbPut = (s, v) => idbDo(s, "readwrite", st => st.put(v)), idbGet = (s, k) => idbDo(s, "readonly", st => st.get(k)),
+      idbDel = (s, k) => idbDo(s, "readwrite", st => st.delete(k)), idbAll = s => idbDo(s, "readonly", st => st.getAll());
+
+/* Photos: resize on the device (max 1280 px, JPEG 0.7) */
+async function resizePhoto(file, max = 1280, q = 0.7) {
+  let src, w, h, url;
+  try { src = await createImageBitmap(file, { imageOrientation: "from-image" }); w = src.width; h = src.height; }
+  catch {
+    url = URL.createObjectURL(file);
+    src = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error("decode")); im.src = url; });
+    w = src.naturalWidth; h = src.naturalHeight;
+  }
+  const s = Math.min(1, max / Math.max(w, h)), cw = Math.max(1, Math.round(w * s)), ch = Math.max(1, Math.round(h * s));
+  const c = document.createElement("canvas"); c.width = cw; c.height = ch;
+  const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, cw, ch); g.drawImage(src, 0, 0, cw, ch);
+  if (src.close) src.close(); if (url) URL.revokeObjectURL(url);
+  const blob = await new Promise(r => c.toBlob(r, "image/jpeg", q));
+  if (!blob) throw new Error("encode");
+  return { blob, width: cw, height: ch, bytes: blob.size };
+}
+const photoUrls = new Map();
+async function photoUrl(id) {
+  if (photoUrls.has(id)) return photoUrls.get(id);
+  const p = await idbGet("photos", id).catch(() => null); if (!p) return null;
+  const u = URL.createObjectURL(p.blob); photoUrls.set(id, u); return u;
+}
+async function dropPhoto(id) { try { await idbDel("photos", id); } catch {} const u = photoUrls.get(id); if (u) { URL.revokeObjectURL(u); photoUrls.delete(id); } }
+
+/* Boat drawings (viewBox units). Top: 240×400, bow up. Side: 400×190, starboard = bow right, port = mirrored. */
+const SVG_TOP = `<svg class="boat-svg" viewBox="0 0 240 400" aria-hidden="true">
+  <defs><pattern id="netp" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V7M0 0H7" class="net-l"/></pattern></defs>
+  <rect data-hit x="41" y="44" width="158" height="134" class="net"/>
+  <path d="M30 44H210" class="beam"/>
+  <path data-hit class="hull" d="M41 6C60 40 68 92 68 150V392H14V150C14 92 22 40 41 6Z"/>
+  <path data-hit class="hull" d="M199 6C218 40 226 92 226 150V392H172V150C172 92 180 40 199 6Z"/>
+  <path data-hit class="deck" d="M14 178Q120 154 226 178V362H14Z"/>
+  <path class="edge" d="M41 6C60 40 68 92 68 150V392H14V150C14 92 22 40 41 6ZM199 6C218 40 226 92 226 150V392H172V150C172 92 180 40 199 6Z"/>
+  <path class="edge" d="M14 178Q120 154 226 178M68 362H172"/>
+  <rect data-hit class="roof" x="50" y="188" width="140" height="86" rx="18"/>
+  <path class="glass" d="M60 200Q120 186 180 200L176 212Q120 200 64 212Z"/>
+  <rect data-hit class="pit" x="42" y="284" width="156" height="72" rx="10"/>
+  <rect class="line" x="92" y="300" width="56" height="34" rx="6"/>
+  <circle class="helm-w" cx="178" cy="278" r="8"/><circle class="mast" cx="120" cy="190" r="5"/>
+  <path class="line" d="M24 372H58M24 382H58M182 372H216M182 382H216"/>
+  <rect class="line" x="30" y="96" width="22" height="14" rx="3"/><rect class="line" x="188" y="96" width="22" height="14" rx="3"/>
+</svg>`;
+const SIDE_INNER = `
+  <path class="wave" d="M0 158q12-5 24 0t24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0 24 0"/>
+  <path class="rig" d="M230 8L378 98M230 8L150 100"/>
+  <rect data-hit class="mast" x="227" y="6" width="6" height="68" rx="2"/>
+  <path data-hit class="roof" d="M104 104L128 76Q132 70 140 70H262Q272 70 282 79L304 100Z"/>
+  <path class="glass" d="M138 80H262L278 95H126Z"/>
+  <path data-hit class="pit" d="M34 106V74H130V80L112 104Z"/>
+  <path class="line" d="M40 78V104M70 78V104"/>
+  <path data-hit class="hull" d="M12 108L372 96Q389 95 386 108L368 150Q365 157 357 157H22Q12 157 12 147Z"/>
+  <rect class="glass" x="150" y="120" width="110" height="9" rx="4.5"/>
+  <circle class="glass" cx="300" cy="118" r="3.5"/><circle class="glass" cx="318" cy="117" r="3.5"/><circle class="glass" cx="96" cy="122" r="3.5"/>
+  <path class="line" d="M12 118L372 106"/>`;
+const sideSvg = mirror => `<svg class="boat-svg" viewBox="0 0 400 190" aria-hidden="true">
+  ${mirror ? `<g transform="translate(400 0) scale(-1 1)">${SIDE_INNER}</g>` : SIDE_INNER}</svg>`;
+const VIEWS = { top: { svg: () => SVG_TOP, ratio: "240 / 400", cls: "v-top" }, stbd: { svg: () => sideSvg(false), ratio: "400 / 190", cls: "v-side" },
+                port: { svg: () => sideSvg(true), ratio: "400 / 190", cls: "v-side" } };
+/** Suggest an area (zone) from where the pin was placed. x,y are 0..1 in the visible drawing. */
+function zoneFor(view, x, y) {
+  if (view === "top") {
+    const X = x * 240, Y = y * 400, d = (a, b) => Math.hypot(X - a, Y - b);
+    if (d(120, 190) < 12) return "mast";
+    if (d(178, 278) < 13) return "helm";
+    const port = X <= 68, stbd = X >= 172;
+    if ((port || stbd) && (Y < 178 || Y > 362 || X < 40 || X > 200)) return (Y < 120 ? "bow" : Y > 362 ? "stern" : "hull") + (port ? "Port" : "Stbd");
+    if (X >= 50 && X <= 190 && Y >= 188 && Y <= 274) return "coachroof";
+    if (X >= 42 && X <= 198 && Y >= 284 && Y <= 356) return "cockpit";
+    if (!port && !stbd && Y < 178) return "trampoline";
+    return "deck";
+  }
+  const side = view === "port" ? "Port" : "Stbd", X = (view === "port" ? 1 - x : x) * 400, Y = y * 190;
+  if (X >= 222 && X <= 238 && Y < 76) return "mast";
+  if (X >= 34 && X <= 130 && Y < 106) return "cockpit";
+  if (X >= 104 && X <= 304 && Y < 104) return "coachroof";
+  if (X > 322) return "bow" + side;
+  if (X < 64) return "stern" + side;
+  return "hull" + side;
+}
+
+let dmgView = "top";
+const dmgTopicId = () => (ALL.find(x => x.special === "damage") || {}).id || "damage-checkin";
+function damageUI() {
+  return `<div id="dmg"></div>`;
+}
+function bindDamage() { renderDamage(); flushQueue(); }
+function renderDamage() {
+  const $d = document.getElementById("dmg"); if (!$d) return;
+  const d = getDraft(), v = VIEWS[dmgView];
+  const cnt = k => d.items.filter(it => it.view === k).length;
+  const pins = d.items.map((it, i) => it.view === dmgView ? `<button class="pin" data-edit="${esc(it.id)}" style="left:${it.x * 100}%;top:${it.y * 100}%" aria-label="${esc(t("sheetEdit", { n: i + 1 }))}">${i + 1}</button>` : "").join("");
+  $d.innerHTML = `
+    <div class="queue-slot" id="queueSlot"></div>
+    <p class="dmg-intro">${esc(t("dmgIntro"))}</p>
+    <div class="seg" role="tablist" aria-label="${esc(t("views"))}">${["top", "stbd", "port"].map(k => `<button role="tab" data-view="${k}" aria-selected="${k === dmgView}">${esc(t("view" + k[0].toUpperCase() + k.slice(1)))}${cnt(k) ? `<i>${cnt(k)}</i>` : ""}</button>`).join("")}</div>
+    <div class="dmg-map ${v.cls}" id="dmgMap">
+      ${dmgView === "top" ? `<span class="dir up">${esc(t("bow"))}</span>` : `<span class="dir ${dmgView === "stbd" ? "l" : "r"}">${esc(t("stern"))}</span><span class="dir ${dmgView === "stbd" ? "r" : "l"}">${esc(t("bow"))}</span>`}
+      <div class="dmg-stage" id="dmgStage" style="aspect-ratio:${v.ratio}">${v.svg()}${pins}</div>
+      ${dmgView === "top" ? `<span class="dir down">${esc(t("stern"))}</span>` : ""}
+    </div>
+    <p class="hint center">${esc(t("tapHint"))}</p>
+    <div class="block"><h2>${esc(t("dmgItems"))} <span class="prog">${esc(t("items", { n: d.items.length }))}</span></h2>
+      ${d.items.length ? `<ul class="list dlist">${d.items.map((it, i) => `<li><button class="row ditem" data-edit="${esc(it.id)}">
+        <span class="pin-n">${i + 1}</span>
+        <span class="tx"><span class="t">${esc(t("dt_" + it.type))} · ${esc(zoneLabel(it.area))}</span>
+          <span class="m">${esc(it.desc || "—")}</span>
+          <span class="m sub">${it.view ? esc(t("view" + it.view[0].toUpperCase() + it.view.slice(1))) : esc(t("noLocation"))}${(it.photos || []).length ? " · " + esc(t("photos", { n: it.photos.length })) : ""}</span></span>
+        <span class="thumbs-mini" data-thumbs="${esc(it.id)}"></span>
+        <span class="chev">${ic("chev")}</span></button></li>`).join("")}</ul>`
+        : `<div class="empty small">${esc(t("noItems"))}</div>`}
+      <button class="add-noloc" id="addNoLoc">${ic("plus")}<span><b>${esc(t("addNoLoc"))}</b><small>${esc(t("addNoLocSub"))}</small></span></button>
+    </div>
+    <div class="block"><a class="btn" href="#/damage/finish" id="dmgContinue">${esc(t("continue"))}${ic("chev")}</a>
+      <p class="hint center">${esc(t("photoHint"))}</p></div>`;
+  $d.querySelectorAll("[data-view]").forEach(b => b.onclick = () => { dmgView = b.dataset.view; renderDamage(); });
+  $d.querySelectorAll("[data-edit]").forEach(b => b.onclick = e => { e.stopPropagation(); const it = getDraft().items.find(x => x.id === b.dataset.edit); if (it) openItemSheet(it, false); });
+  document.getElementById("dmgStage").addEventListener("click", e => {
+    if (e.target.closest(".pin")) return;
+    if (!e.target.closest("[data-hit]")) { toast(t("tapBoat")); return; }
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    const zone = zoneFor(dmgView, x, y);
+    openItemSheet({ id: uid(), view: dmgView, x: +x.toFixed(4), y: +y.toFixed(4), zone, area: zone, type: "", desc: "", photos: [] }, true);
+  });
+  document.getElementById("addNoLoc").onclick = () => openItemSheet({ id: uid(), view: null, x: null, y: null, zone: "equipment", area: "equipment", type: "", desc: "", photos: [] }, true);
+  // little thumbnails in the list
+  d.items.forEach(async it => { const slot = $d.querySelector(`[data-thumbs="${CSS.escape(it.id)}"]`); if (!slot || !(it.photos || []).length) return;
+    const u = await photoUrl(it.photos[0]); if (u && slot.isConnected) slot.innerHTML = `<img src="${u}" alt="">`; });
+  renderQueueSlot();
+}
+
+function openItemSheet(item, isNew) {
+  closeSheet();
+  const d = getDraft(), idx = isNew ? d.items.length : d.items.findIndex(x => x.id === item.id), n = idx + 1;
+  const it = { ...item, photos: [...(item.photos || [])] }, added = [], removed = [];
+  let saved = false;
+  const el = document.createElement("div");
+  el.className = "sheet-wrap"; el.id = "itemSheet";
+  el.innerHTML = `<div class="backdrop" data-close></div>
+    <div class="sheet form" role="dialog" aria-modal="true" aria-labelledby="itTitle">
+      <div class="grab"></div>
+      <div class="it-head"><span class="pin-n big">${n}</span><div><h2 id="itTitle">${esc(t(isNew ? "sheetNew" : "sheetEdit", { n }))}</h2>
+        <small>${it.view ? esc(t("view" + it.view[0].toUpperCase() + it.view.slice(1))) + " · " : ""}${esc(zoneLabel(it.zone))}</small></div></div>
+      <div class="f-lbl">${esc(t("dmgType"))}</div>
+      <div class="opts" id="itType">${DMG_TYPES.map(k => `<button type="button" data-type="${k}" aria-pressed="${it.type === k}">${esc(t("dt_" + k))}</button>`).join("")}</div>
+      <label class="f-lbl" for="itArea">${esc(t("dmgArea"))}</label>
+      <div class="select"><select id="itArea">${ZONES.map(z => `<option value="${z}" ${z === it.area ? "selected" : ""}>${esc(zoneLabel(z))}</option>`).join("")}</select>${ic("down")}</div>
+      <label class="f-lbl" for="itDesc">${esc(t("dmgDesc"))} <span>${esc(t("optional"))}</span></label>
+      <textarea class="textarea in-sheet" id="itDesc" maxlength="300" rows="2" placeholder="${esc(t("dmgDescPh"))}">${esc(it.desc)}</textarea>
+      <div class="f-lbl">${esc(t("dmgPhotos"))} <span>${esc(t("optional"))}</span></div>
+      <div class="thumbs" id="itPhotos"></div>
+      <p class="hint">${esc(t("photoHint"))}</p>
+      <div class="sheet-actions">
+        <button class="btn" id="itSave">${esc(t("save"))}</button>
+        ${isNew ? `<button class="btn ghost" data-close>${esc(t("cancel"))}</button>` : `<button class="btn ghost danger" id="itDel">${ic("trash")}${esc(t("deleteItem"))}</button>`}
+      </div>
+    </div>`;
+  document.body.appendChild(el); document.body.classList.add("no-scroll"); sheetEl = el;
+  // temporary pin while placing
+  if (isNew && it.view) { const st = document.getElementById("dmgStage"); if (st) st.insertAdjacentHTML("beforeend", `<span class="pin temp" style="left:${it.x * 100}%;top:${it.y * 100}%">${n}</span>`); }
+  el._onClose = () => {
+    document.querySelector(".pin.temp")?.remove();
+    if (!saved) added.forEach(dropPhoto);
+  };
+  requestAnimationFrame(() => el.classList.add("open"));
+  el.querySelectorAll("[data-close]").forEach(b => b.onclick = closeSheet);
+  el.querySelectorAll("[data-type]").forEach(b => b.onclick = () => { it.type = b.dataset.type; el.querySelectorAll("[data-type]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  const drawPhotos = async () => {
+    const box = el.querySelector("#itPhotos");
+    const urls = await Promise.all(it.photos.map(photoUrl));
+    box.innerHTML = it.photos.map((id, k) => `<div class="thumb"><img src="${urls[k] || ""}" alt=""><button type="button" data-rm="${esc(id)}" aria-label="${esc(t("removePhoto"))}">${ic("x")}</button></div>`).join("") +
+      (it.photos.length < MAX_PHOTOS ? `<label class="add-photo" id="addPhoto">${ic("camera")}<span>${esc(t("addPhoto"))}</span>
+        <input type="file" accept="image/*" capture="environment" id="itFile" hidden></label>` : `<p class="hint">${esc(t("maxPhotos", { n: MAX_PHOTOS }))}</p>`);
+    box.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { const id = b.dataset.rm; it.photos = it.photos.filter(x => x !== id);
+      const a = added.indexOf(id); if (a >= 0) { added.splice(a, 1); dropPhoto(id); } else removed.push(id); drawPhotos(); });
+    const f = box.querySelector("#itFile");
+    if (f) f.onchange = async () => {
+      const files = [...f.files].slice(0, MAX_PHOTOS - it.photos.length); if (!files.length) return;
+      const lab = box.querySelector("#addPhoto"); lab.classList.add("busy"); lab.querySelector("span").textContent = t("photoBusy");
+      for (const file of files) {
+        try {
+          const r = await resizePhoto(file), id = "ph_" + uid();
+          await idbPut("photos", { id, reportId: getDraft().id, itemId: it.id, blob: r.blob, type: "image/jpeg", width: r.width, height: r.height, bytes: r.bytes, createdAt: new Date().toISOString(), status: "device" });
+          it.photos.push(id); added.push(id);
+        } catch { toast(t("photoFailed")); }
+      }
+      drawPhotos();
+    };
+  };
+  drawPhotos();
+  el.querySelector("#itSave").onclick = () => {
+    if (!it.type) { toast(t("chooseType")); el.querySelector("#itType").classList.add("need"); return; }
+    it.area = el.querySelector("#itArea").value; it.desc = el.querySelector("#itDesc").value.trim().slice(0, 300);
+    const dd = getDraft(); const at = dd.items.findIndex(x => x.id === it.id);
+    if (at >= 0) dd.items[at] = it; else dd.items.push(it);
+    saveDraft(dd); saved = true; removed.forEach(dropPhoto);
+    closeSheet(); renderDamage();
+  };
+  const del = el.querySelector("#itDel");
+  if (del) del.onclick = () => {
+    if (!confirm(t("deleteConfirm", { n }))) return;
+    const dd = getDraft(); dd.items = dd.items.filter(x => x.id !== it.id); saveDraft(dd);
+    [...item.photos, ...added].forEach(dropPhoto); saved = true;
+    closeSheet(); renderDamage(); toast(t("deleted"));
+  };
+}
+
+/* Finish step */
+function viewDamageFinish() {
+  const d = getDraft();
+  setNav({ mode: "page", title: t("finishTitle") });
+  const pc = photoCount(d);
+  $app.innerHTML = `
+    <div class="page-head"><div class="eyebrow">${esc(t("dmgCardTitle"))}</div><h1>${esc(t("finishTitle"))}</h1><p>${esc(t("finishSub"))}</p></div>
+    <div class="block"><h2>${esc(t("summary"))} <span class="prog">${esc(t("items", { n: d.items.length }))} · ${esc(t("photos", { n: pc }))}</span></h2>
+      <div class="card sumcard">${d.items.length ? d.items.map((it, i) => `<div class="sumrow"><span class="pin-n">${i + 1}</span><span><b>${esc(zoneLabel(it.area))}</b> — ${esc(t("dt_" + it.type))}${it.desc ? `: ${esc(it.desc)}` : ""}</span></div>`).join("")
+        : `<div class="sumrow ok">${ic("check")}<span>${esc(t("noDamageFound"))}</span></div>`}
+      <a class="sum-edit" href="#/t/${dmgTopicId()}">${esc(t("edit"))}</a></div></div>
+    <div class="block"><div class="card">
+      <div class="field"><label for="dName">${esc(t("acceptedBy"))}</label><input id="dName" autocomplete="name" maxlength="80" placeholder="${esc(t("namePh"))}" value="${esc(d.name)}"></div>
+      <div class="field dates"><div><label for="dFrom">${esc(t("weekFrom"))}</label><input id="dFrom" type="date" value="${esc(d.from)}"></div>
+        <div><label for="dTo">${esc(t("weekTo"))}</label><input id="dTo" type="date" value="${esc(d.to)}"></div></div>
+    </div></div>
+    <div class="block"><div class="card"><button class="tick confirm" id="dConfirm" aria-pressed="${!!d.confirmed}"><span class="cb">${ic("check")}</span><span class="tx">${esc(t("confirmLabel"))}</span></button></div></div>
+    <div class="block"><button class="btn wa" id="dSubmit">${ic("chat")}${esc(t("submitReport"))}</button>
+      <p class="note">${ic("info")}<span>${esc(t("submitNote"))}</span></p></div>`;
+  const sync = () => { const dd = getDraft(); dd.name = document.getElementById("dName").value; dd.from = document.getElementById("dFrom").value; dd.to = document.getElementById("dTo").value; saveDraft(dd); };
+  ["dName", "dFrom", "dTo"].forEach(id => document.getElementById(id).addEventListener("input", sync));
+  document.getElementById("dFrom").addEventListener("change", () => { const f = document.getElementById("dFrom"), to = document.getElementById("dTo");
+    if (f.value && (!to.value || to.value < f.value)) { to.value = isoDate(addDays(7, new Date(f.value + "T12:00:00"))); } sync(); });
+  const cb = document.getElementById("dConfirm");
+  cb.onclick = () => { const dd = getDraft(); dd.confirmed = !dd.confirmed; saveDraft(dd); cb.setAttribute("aria-pressed", dd.confirmed); cb.classList.remove("need"); };
+  document.getElementById("dSubmit").onclick = submitDamage;
+}
+async function buildPayload(d) {
+  const metas = {};
+  for (const it of d.items) for (const id of it.photos || []) { const p = await idbGet("photos", id).catch(() => null); if (p) metas[id] = { id, type: "image/jpeg", bytes: p.bytes, width: p.width, height: p.height }; }
+  return { id: d.id, boat: BOAT.id, kind: d.kind || "checkin", name: d.name.trim(), week: { from: d.from, to: d.to }, confirmed: true,
+    lang, createdAt: d.createdAt, appVersion: APP_VERSION,
+    items: d.items.map(it => ({ id: it.id, view: it.view || null, x: it.view ? it.x : null, y: it.view ? it.y : null, zone: it.zone || it.area || "other",
+      area: zoneLabel(it.area || it.zone, "en"), type: it.type, description: (it.desc || "").trim(),
+      photos: (it.photos || []).map(id => metas[id] || { id, type: "image/jpeg" }) })) };
+}
+/** English summary for the owner (APP_CONFIG.messageLang). */
+function damageMessage(p, status) {
+  const ml = CFG.messageLang, pcs = n => tm(n === 1 ? "photos_one" : "photos_other", { n });
+  const lines = [tm("dmgTitle", { boat: BOAT.name }), `${BOAT.model}`,
+    `${tm("week")}: ${fmtDate(p.week.from, ml)} – ${fmtDate(p.week.to, ml)}`, `${tm("acceptedBy")}: ${p.name}`,
+    `${tm("report")}: ${p.id.slice(0, 8)} (${status === "saved" ? tm("savedOnline") : tm("savedQueued")})`, ""];
+  if (!p.items.length) lines.push(tm("noDamage"));
+  p.items.forEach((it, i) => lines.push(`${i + 1}. ${it.area}${it.view ? "" : ` (${tm("noLoc")})`} — ${t("dt_" + it.type, {}, ml)}${it.description ? `: ${it.description}` : ""}${it.photos.length ? ` (${pcs(it.photos.length)})` : ""}`));
+  const pc = p.items.reduce((a, it) => a + it.photos.length, 0);
+  lines.push("");
+  if (pc) lines.push(tm("photosLine", { n: pc }));
+  lines.push(tm("confirmLine"));
+  if (lang !== CFG.messageLang) lines.push(`${tm("guestLang")}: ${L().name}`);
+  return lines.join("\n");
+}
+async function postReport(payload) {
+  if (!API) throw new Error("no api");
+  const ac = new AbortController(), timer = setTimeout(() => ac.abort(), (CFG.api && CFG.api.timeoutMs) || 8000);
+  try {
+    const r = await fetch(API + "/api/reports", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload), signal: ac.signal });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok) return { ok: true, data: j };
+    const e = new Error(j.error || "http " + r.status); e.status = r.status; e.permanent = r.status >= 400 && r.status < 500 && ![408, 425, 429].includes(r.status); throw e;
+  } finally { clearTimeout(timer); }
+}
+let submitting = false;
+async function submitDamage() {
+  if (submitting) return;
+  const d = getDraft();
+  d.name = document.getElementById("dName").value.trim(); d.from = document.getElementById("dFrom").value; d.to = document.getElementById("dTo").value; saveDraft(d);
+  if (!d.name) { toast(t("needName")); document.getElementById("dName").focus(); return; }
+  if (!d.from || !d.to || d.to < d.from) { toast(t("needDates")); return; }
+  if (!d.confirmed) { toast(t("needConfirm")); document.getElementById("dConfirm").classList.add("need"); return; }
+  submitting = true;
+  const btn = document.getElementById("dSubmit"); btn.disabled = true; btn.innerHTML = `<span class="spin light"></span>${esc(t("submitting"))}`;
+  const payload = await buildPayload(d);
+  let status = "queued";
+  try {
+    if (navigator.onLine === false) throw new Error("offline");
+    await postReport(payload); status = "saved";
+  } catch (e) {
+    if (e.permanent) { submitting = false; btn.disabled = false; btn.innerHTML = `${ic("chat")}${esc(t("submitReport"))}`; toast(t("loadFailed", { e: e.message })); return; }
+    try { await idbPut("queue", { id: payload.id, payload, tries: 1, lastError: String(e.message || e), queuedAt: new Date().toISOString() }); }
+    catch { store.set(`damage:${BOAT.id}:queue:${payload.id}`, payload); }
+  }
+  const photos = d.items.flatMap(it => it.photos || []);
+  store.set(LKEY(), { id: payload.id, status, photos, payload, at: new Date().toISOString() });
+  store.del(DKEY());
+  submitting = false;
+  const text = damageMessage(payload, status);
+  const url = waUrl(text); window.__lastWhatsApp = url;
+  try { const w = window.open(url, "_blank"); if (w) try { w.opener = null; } catch {} } catch {}
+  location.hash = "#/damage/done";
+}
+
+/* Done screen */
+async function viewDamageDone() {
+  const last = store.get(LKEY());
+  if (!last) { location.replace("#/t/" + dmgTopicId()); return; }
+  setNav({ mode: "page", title: t("doneTitle") });
+  const queued = last.status !== "saved";
+  const text = damageMessage(last.payload, last.status), url = waUrl(text);
+  $app.innerHTML = `
+    <div class="done-wrap"><div class="done-ic ${queued ? "q" : ""}">${ic(queued ? "cloud" : "check")}</div>
+      <h1>${esc(t("doneTitle"))}</h1><p>${esc(t(queued ? "doneQueued" : "doneSaved"))}</p>
+      <div class="ref">${esc(t("reportId"))} ${esc(last.id.slice(0, 8))} · <span class="${queued ? "warn" : "ok"}">${esc(t(queued ? "status_queued" : "status_saved"))}</span></div></div>
+    <div class="queue-slot" id="queueSlot"></div>
+    <div class="block"><a class="btn wa" id="waSummary" href="${esc(url)}" target="_blank" rel="noopener">${ic("chat")}${esc(t("sendSummary"))}</a>
+      ${last.photos.length ? `<button class="btn ghost" id="sharePhotos">${ic("share")}${esc(t("sharePhotos", { n: last.photos.length }))}</button>
+      <p class="hint center" id="shareHint">${esc(t("sharePhotosHint"))}</p>` : ""}
+      <p class="note">${ic("chat")}<span>WhatsApp · ${esc(ownerWa())}</span>${mockTag("ownerWhatsApp")}</p></div>
+    <div class="block row2"><a class="btn ghost" href="#/t/${dmgTopicId()}" id="newReport">${esc(t("newReport"))}</a><a class="btn ghost" href="#/">${esc(t("backToManualBtn"))}</a></div>`;
+  document.getElementById("waSummary").addEventListener("click", () => { window.__lastWhatsApp = url; });
+  renderQueueSlot();
+  const sb = document.getElementById("sharePhotos");
+  if (sb) {
+    // load the files first so navigator.share() still runs inside the tap
+    const files = (await Promise.all(last.photos.map(id => idbGet("photos", id).catch(() => null)))).filter(Boolean)
+      .map((p, i) => new File([p.blob], `anasa-damage-${last.id.slice(0, 8)}-${i + 1}.jpg`, { type: "image/jpeg" }));
+    const can = files.length && navigator.canShare && navigator.canShare({ files });
+    if (!can) document.getElementById("shareHint").textContent = t("shareUnsupported");
+    sb.onclick = async () => {
+      if (!can) { toast(t("shareUnsupported")); return; }
+      try { await navigator.share({ files, title: tm("dmgTitle", { boat: BOAT.name }), text: tm("dmgTitle", { boat: BOAT.name }) + " · " + last.id.slice(0, 8) }); } catch {}
+    };
+  }
+}
+
+/* Offline queue */
+async function queuedItems() { try { return await idbAll("queue"); } catch { return []; } }
+async function renderQueueSlot() {
+  const slot = document.getElementById("queueSlot"); if (!slot) return;
+  const q = await queuedItems();
+  slot.innerHTML = q.length ? `<div class="queue-bar">${ic("cloud")}<span>${esc(t("queued", { n: q.length }))}</span><button id="retryQueue">${esc(t("retryNow"))}</button></div>` : "";
+  const b = document.getElementById("retryQueue"); if (b) b.onclick = () => flushQueue(true);
+}
+let flushing = false;
+async function flushQueue(manual = false) {
+  if (flushing || !API) return; flushing = true;
+  let sent = 0;
+  try {
+    for (const job of await queuedItems()) {
+      try { await postReport(job.payload); await idbDel("queue", job.id); sent++;
+        const last = store.get(LKEY()); if (last && last.id === job.id) { last.status = "saved"; store.set(LKEY(), last); }
+      } catch (e) {
+        if (e.permanent) await idbDel("queue", job.id);
+        else await idbPut("queue", { ...job, tries: (job.tries || 0) + 1, lastError: String(e.message || e) });
+      }
+    }
+  } finally { flushing = false; }
+  if (sent) { toast(t("synced")); if (/^#\/damage\/done/.test(location.hash)) viewDamageDone(); }
+  else if (manual) toast(t("doneQueued"));
+  renderQueueSlot();
+}
+window.addEventListener("online", () => flushQueue());
+
+/* Owner: damage reports from the Worker */
+const OKEY = "owner:apiKey";
+const ownerKey = () => store.get(OKEY, "") || (CFG.api && CFG.api.ownerKey) || "";
+function ownerDamageUI() {
+  return `<div class="block" id="ownerDmg"><h2>${esc(t("dmgReports"))} <span class="prog">${esc(BOAT.name)}</span></h2>
+    <div class="card"><div class="field"><label for="okey">${esc(t("ownerKey"))}</label>
+      <input id="okey" type="password" autocomplete="off" spellcheck="false" value="${esc(ownerKey())}">
+      <div class="help">${esc(t("ownerKeyHelp"))}</div></div></div>
+    <div class="block row2 tight"><button class="btn" id="loadReports">${esc(t("loadReports"))}</button><button class="btn ghost" id="refreshReports">${esc(t("refresh"))}</button></div>
+    <p class="note warnnote">${ic("photo")}<span>${esc(t("photosDeviceNote"))}</span></p>
+    <div id="reportList"></div></div>`;
+}
+async function loadOwnerReports() {
+  const $l = document.getElementById("reportList"); if (!$l) return;
+  const key = document.getElementById("okey").value.trim();
+  if (!key) { $l.innerHTML = `<div class="empty small">${esc(t("needKey"))}</div>`; return; }
+  store.set(OKEY, key);
+  $l.innerHTML = `<div class="empty small"><span class="spin"></span> ${esc(t("loading"))}</div>`;
+  try {
+    const r = await fetch(`${API}/api/reports?boat=${encodeURIComponent(BOAT.id)}&limit=50`, { headers: { "x-owner-key": key } });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 401) { $l.innerHTML = `<div class="empty small err">${esc(t("wrongKey"))}</div>`; return; }
+    if (!r.ok) throw new Error(j.error || r.status);
+    const reps = j.reports || [];
+    $l.innerHTML = reps.length ? `<div class="reports">${reps.map(rep => {
+      const when = new Date(rep.created_at).toLocaleString(L().locale, { dateStyle: "medium", timeStyle: "short" });
+      return `<details class="rep" data-id="${esc(rep.id)}"><summary><span class="pin-n">${rep.item_count}</span>
+        <span class="tx"><b>${esc(rep.name)}</b><small>${esc(t("week"))} ${esc(fmtDate(rep.week_from))} – ${esc(fmtDate(rep.week_to))}</small>
+        <small>${esc(t("submitted"))} ${esc(when)} · ${esc(t("items", { n: rep.item_count }))}${rep.photo_count ? " · " + esc(t("photos", { n: rep.photo_count })) : ""}</small></span>
+        <span class="kind">${esc(t("kind_" + rep.kind))}</span><span class="chev">${ic("down")}</span></summary>
+        <div class="rep-body">${rep.items.length ? rep.items.map(it => `<div class="sumrow"><span class="pin-n">${it.n}</span><span><b>${esc(it.area || it.zone || "—")}</b> — ${esc(t("dt_" + it.type))}${it.description ? `: ${esc(it.description)}` : ""}
+          ${it.photo_count ? `<small class="ph-note">${ic("photo")} ${esc(t("photos", { n: it.photo_count }))} · ${esc(t("onDevice"))}</small>` : ""}</span></div>`).join("")
+          : `<div class="sumrow ok">${ic("check")}<span>${esc(t("noDamageFound"))}</span></div>`}
+          <div class="rep-meta">${esc(t("reportId"))} ${esc(rep.id)}${rep.lang ? " · " + esc(rep.lang.toUpperCase()) : ""}</div></div></details>`; }).join("")}</div>`
+      : `<div class="empty small">${esc(t("noReports"))}</div>`;
+  } catch (e) { $l.innerHTML = `<div class="empty small err">${esc(t("loadFailed", { e: e.message || e }))}</div>`; }
+}
+function bindOwnerDamage() {
+  const go = () => loadOwnerReports();
+  document.getElementById("loadReports").onclick = go; document.getElementById("refreshReports").onclick = go;
+  if (ownerKey()) go(); else loadOwnerReports();
+}
+
 /* ---------- Router ---------- */
 function route(scrollTop = true) {
   closeSheet();
@@ -703,6 +1188,8 @@ function route(scrollTop = true) {
   else if (view === "t") viewTopic(id);
   else if (view === "emergency") viewEmergency();
   else if (view === "owner") viewOwner();
+  else if (view === "damage" && id === "finish") viewDamageFinish();
+  else if (view === "damage" && id === "done") viewDamageDone();
   else viewNotFound();
   if (view && scrollTop) window.scrollTo(0, 0);
   onScroll();
@@ -716,6 +1203,7 @@ window.addEventListener("scroll", onScroll, { passive: true });
 $back.addEventListener("click", () => (history.length > 1 ? history.back() : (location.hash = "#/")));
 window.addEventListener("hashchange", () => route());
 
-buildModel(); renderChrome(); route();
+buildModel(); renderChrome(); applyTheme(); route();
+window.addEventListener("load", () => setTimeout(() => flushQueue(), 1200));
 
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(() => {}));

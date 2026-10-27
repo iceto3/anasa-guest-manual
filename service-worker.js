@@ -1,6 +1,6 @@
 /* Cache-first service worker: the whole manual works with no signal at sea.
  * Bump VERSION whenever content changes so guests get the update next time they're online. */
-const VERSION = "anasa-manual-v8";
+const VERSION = "anasa-manual-v9";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest",
                 "./config.js", "./lang/en.js", "./lang/el.js", "./lang/bg.js", "./lang/de.js", "./boats/anasa.js",
                 "./icon-192.png", "./icon-512.png", "./icon-maskable-192.png", "./icon-maskable-512.png",

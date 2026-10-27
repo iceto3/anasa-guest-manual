@@ -238,3 +238,45 @@ I18N.de = {
     "floating-lines": { title: "Schwimmleinen: wie viele, wie lang und wo sie liegen", kw: ["schwimmleinen", "schwimmleine", "leinen", "taue", "marina", "baden"] }
   }
 };
+
+/* ---------- v9: Design + Schadensprotokoll beim Check-in ---------- */
+Object.assign(I18N.de.ui, {
+  theme: "Design", theme_auto: "Automatisch", theme_light: "Hell", theme_dark: "Dunkel", themeNow: "Design: {m}",
+  dmgCardTitle: "Check-in: vorhandene Schäden notieren", dmgCardSub: "Kratzer oder Dellen bei der Übernahme markieren",
+  dmgIntro: "Gehen Sie einmal ums Boot und tippen Sie auf die Zeichnung, wo Sie vorhandene Schäden sehen. Jeder Tipp setzt eine nummerierte Markierung.",
+  viewTop: "Oben", viewStbd: "Steuerbord", viewPort: "Backbord", views: "Ansicht", bow: "Bug", stern: "Heck",
+  tapBoat: "Aufs Boot tippen, nicht aufs Wasser", tapHint: "Tippen für eine Markierung · Ansicht wechseln für die Rumpfseiten",
+  dmgItems: "Notierte Schäden", noItems: "Noch nichts notiert. Keine Schäden gefunden? Sie können trotzdem absenden — auch das ist ein nützlicher Nachweis.",
+  addNoLoc: "Ohne Position hinzufügen", addNoLocSub: "Ausrüstung, Polster, Küchenartikel…", noLocation: "Ohne Position",
+  continue: "Weiter", edit: "Bearbeiten", delete: "Löschen", deleteItem: "Eintrag löschen", deleteConfirm: "Eintrag #{n} löschen?", deleted: "Eintrag gelöscht",
+  photos_one: "{n} Foto", photos_other: "{n} Fotos", items_one: "{n} Eintrag", items_other: "{n} Einträge",
+  sheetNew: "Neuer Schaden · #{n}", sheetEdit: "Schaden #{n}", dmgType: "Art des Schadens", chooseType: "Bitte die Art des Schadens wählen",
+  dt_scratch: "Kratzer", dt_dent: "Delle / Macke", dt_torn: "Gerissen", dt_stain: "Fleck", dt_notWorking: "Funktioniert nicht", dt_missing: "Fehlt", dt_other: "Sonstiges",
+  dmgArea: "Bereich", dmgDesc: "Kurze Beschreibung", dmgDescPh: "z. B. 10 cm Kratzer über der Wasserlinie",
+  dmgPhotos: "Fotos", addPhoto: "Foto hinzufügen", removePhoto: "Foto entfernen", photoBusy: "Foto wird vorbereitet…", photoFailed: "Foto konnte nicht gelesen werden",
+  photoHint: "Fotos bleiben auf diesem Handy. Nach dem Absenden können Sie sie per WhatsApp teilen.", maxPhotos: "Bis zu {n} Fotos pro Eintrag",
+  zone_bowPort: "Bug Backbord", zone_bowStbd: "Bug Steuerbord", zone_hullPort: "Rumpf Backbord", zone_hullStbd: "Rumpf Steuerbord",
+  zone_sternPort: "Heck / Spiegel Backbord", zone_sternStbd: "Heck / Spiegel Steuerbord", zone_trampoline: "Trampolin / Vordeck",
+  zone_deck: "Deck", zone_coachroof: "Kajütdach / Salonfenster", zone_saloon: "Salon", zone_cockpit: "Cockpit", zone_helm: "Steuerstand",
+  zone_mast: "Mast & Rigg", zone_portCabins: "Kabinen Backbord", zone_stbdCabins: "Kabinen Steuerbord", zone_galley: "Pantry", zone_heads: "Toiletten",
+  zone_dinghy: "Beiboot & Außenborder", zone_equipment: "Ausrüstung / Inventar", zone_other: "Sonstiges",
+  finishTitle: "Abschließen & senden", finishSub: "Wer übernimmt das Boot, und für welche Woche.", summary: "Übersicht",
+  acceptedBy: "Name der Person, die das Boot übernimmt", namePh: "Vor- und Nachname", weekFrom: "Charterwoche von", weekTo: "Bis",
+  confirmLabel: "Ich habe das Boot geprüft, und das sind alle Schäden, die ich gefunden habe.", submitReport: "Protokoll senden", submitting: "Protokoll wird gespeichert…",
+  needName: "Bitte Ihren Namen eingeben", needConfirm: "Bitte die Bestätigung ankreuzen", needDates: "Bitte die Daten prüfen",
+  noDamageFound: "Keine vorhandenen Schäden gefunden", submitNote: "Das Protokoll wird für das Anasa-Büro gespeichert, danach öffnet sich WhatsApp mit einer Zusammenfassung.",
+  doneTitle: "Protokoll gespeichert", doneSaved: "Ihr Check-in-Protokoll ist beim Anasa-Büro gespeichert. Senden Sie die Zusammenfassung auch per WhatsApp.",
+  doneQueued: "Keine Verbindung — das Protokoll ist auf diesem Handy gespeichert und wird automatisch gesendet, sobald Sie wieder online sind.",
+  sendSummary: "Zusammenfassung per WhatsApp", sharePhotos: "Fotos teilen ({n})", sharePhotosHint: "Öffnet das Teilen-Menü — wählen Sie WhatsApp und unseren Chat.",
+  shareUnsupported: "Dieser Browser kann keine Fotos teilen — hängen Sie sie in WhatsApp aus der Galerie an.", reportId: "Protokoll",
+  newReport: "Neues Protokoll", backToManualBtn: "Zurück zum Handbuch", status_saved: "Online gespeichert", status_queued: "Wartet auf Sync",
+  queued_one: "{n} Protokoll wartet auf Sync", queued_other: "{n} Protokolle warten auf Sync", retryNow: "Erneut", synced: "Protokoll gesendet ✓",
+  dmgReports: "Schadensprotokolle", ownerKey: "Eigner-API-Schlüssel", ownerKeyHelp: "Nur auf diesem Gerät gespeichert. Einfacher Schutz, keine echte Sicherheit.",
+  loadReports: "Protokolle laden", refresh: "Aktualisieren", noReports: "Noch keine Protokolle.", loadFailed: "Laden fehlgeschlagen ({e}).",
+  needKey: "Eigner-Schlüssel eingeben, um Protokolle zu sehen.", wrongKey: "Schlüssel nicht akzeptiert.", loading: "Wird geladen…",
+  photosDeviceNote: "Fotos sind nur auf dem Handy des Gastes gespeichert — sie werden noch nicht hochgeladen. Bitten Sie den Gast, sie per WhatsApp zu teilen.",
+  kind_checkin: "Check-in", kind_checkout: "Check-out", week: "Woche", submitted: "Gesendet", onDevice: "auf dem Handy des Gastes"
+});
+I18N.de.topics["damage-checkin"] = { title: "Check-in: vorhandene Schäden notieren", short: "Schadens-Check-in",
+  summary: "Markieren Sie zu Beginn Ihrer Charterwoche alle bereits vorhandenen Schäden — damit später niemand dafür belastet wird.",
+  kw: ["schaden", "schäden", "check-in", "übernahme", "prüfung", "kratzer", "delle", "zustand", "protokoll", "foto"] };

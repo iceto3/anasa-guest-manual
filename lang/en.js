@@ -250,3 +250,51 @@ I18N.en = {
     "floating-lines": { title: "Floating lines: how many, how long, and where they are kept", kw: ["floating lines", "floating line", "lines", "ropes", "marina", "swim line"] }
   }
 };
+
+/* ---------- v9: theme + damage check-in ---------- */
+Object.assign(I18N.en.ui, {
+  theme: "Theme", theme_auto: "Auto", theme_light: "Light", theme_dark: "Dark", themeNow: "Theme: {m}",
+  dmgCardTitle: "Check-in: note existing damage", dmgCardSub: "Mark scratches or dents when you take over the boat",
+  dmgIntro: "Walk around the boat and tap the drawing wherever you see existing damage. Each tap adds a numbered pin.",
+  viewTop: "Top", viewStbd: "Starboard", viewPort: "Port", views: "View", bow: "Bow", stern: "Stern",
+  tapBoat: "Tap the boat, not the water", tapHint: "Tap to add a pin · switch views for the hull sides",
+  dmgItems: "Noted damage", noItems: "Nothing noted yet. Found no damage? You can still submit — that is a useful record too.",
+  addNoLoc: "Add item without location", addNoLocSub: "Inside equipment, cushions, galley items…", noLocation: "No location",
+  continue: "Continue", edit: "Edit", delete: "Delete", deleteItem: "Delete item", deleteConfirm: "Delete item #{n}?", deleted: "Item deleted",
+  photos_one: "{n} photo", photos_other: "{n} photos", items_one: "{n} item", items_other: "{n} items",
+  sheetNew: "New damage · #{n}", sheetEdit: "Damage #{n}", dmgType: "Type of damage", chooseType: "Choose the type of damage",
+  dt_scratch: "Scratch", dt_dent: "Dent / ding", dt_torn: "Torn / ripped", dt_stain: "Stain", dt_notWorking: "Not working", dt_missing: "Missing", dt_other: "Other",
+  dmgArea: "Area", dmgDesc: "Short description", dmgDescPh: "e.g. 10 cm scratch above the waterline",
+  dmgPhotos: "Photos", addPhoto: "Add photo", removePhoto: "Remove photo", photoBusy: "Preparing photo…", photoFailed: "Couldn't read that photo",
+  photoHint: "Photos stay on this phone. After you submit you can share them on WhatsApp.", maxPhotos: "Up to {n} photos per item",
+  zone_bowPort: "Port bow", zone_bowStbd: "Starboard bow", zone_hullPort: "Port hull", zone_hullStbd: "Starboard hull",
+  zone_sternPort: "Port stern / transom", zone_sternStbd: "Starboard stern / transom", zone_trampoline: "Trampoline / foredeck",
+  zone_deck: "Deck", zone_coachroof: "Coachroof / saloon windows", zone_saloon: "Saloon", zone_cockpit: "Cockpit", zone_helm: "Helm station",
+  zone_mast: "Mast & rigging", zone_portCabins: "Port cabins", zone_stbdCabins: "Starboard cabins", zone_galley: "Galley", zone_heads: "Toilets / heads",
+  zone_dinghy: "Dinghy & outboard", zone_equipment: "Equipment / inventory", zone_other: "Other",
+  finishTitle: "Finish & submit", finishSub: "Who is taking over the boat, and for which week.", summary: "Summary",
+  acceptedBy: "Name of the person accepting the boat", namePh: "First and last name", weekFrom: "Charter week from", weekTo: "To",
+  confirmLabel: "I inspected the boat and these are all the damages I found.", submitReport: "Submit report", submitting: "Saving report…",
+  needName: "Please enter your name", needConfirm: "Please tick the confirmation box", needDates: "Please check the dates",
+  noDamageFound: "No existing damage found", submitNote: "The report is saved for the Anasa office, then WhatsApp opens with a summary.",
+  doneTitle: "Report saved", doneSaved: "Your check-in report is saved with the Anasa office. Send the summary on WhatsApp too.",
+  doneQueued: "No connection — the report is saved on this phone and will be sent automatically when you're back online.",
+  sendSummary: "Send summary on WhatsApp", sharePhotos: "Share photos ({n})", sharePhotosHint: "Opens the share menu — choose WhatsApp and our chat.",
+  shareUnsupported: "This browser can't share photos — attach them in WhatsApp from your gallery.", reportId: "Report",
+  newReport: "Start a new report", backToManualBtn: "Back to the manual", status_saved: "Saved online", status_queued: "Waiting to sync",
+  queued_one: "{n} report waiting to sync", queued_other: "{n} reports waiting to sync", retryNow: "Retry", synced: "Report synced ✓",
+  dmgReports: "Damage reports", ownerKey: "Owner API key", ownerKeyHelp: "Saved on this device only. Basic protection, not real security.",
+  loadReports: "Load reports", refresh: "Refresh", noReports: "No reports yet.", loadFailed: "Couldn't load reports ({e}).",
+  needKey: "Enter the owner key to see reports.", wrongKey: "Owner key not accepted.", loading: "Loading…",
+  photosDeviceNote: "Photos are stored on the guest's phone only — they are not uploaded yet. Ask the guest to share them on WhatsApp.",
+  kind_checkin: "Check-in", kind_checkout: "Check-out", week: "Week", submitted: "Submitted", onDevice: "on guest's phone"
+});
+Object.assign(I18N.en.ui.msg, {
+  dmgTitle: "📋 Check-in damage report — {boat}", week: "Week", acceptedBy: "Accepted by", report: "Report",
+  savedOnline: "saved online", savedQueued: "saved on my phone, will sync when online", noDamage: "No existing damage found.",
+  noLoc: "no location", photos_one: "{n} photo", photos_other: "{n} photos",
+  photosLine: "Photos: {n} taken — I can attach them here in WhatsApp.", confirmLine: "✅ I inspected the boat and these are all the damages I found."
+});
+I18N.en.topics["damage-checkin"] = { title: "Check-in: note existing damage", short: "Damage check-in",
+  summary: "At the start of your charter week, mark any damage that is already there — so nobody is charged for it later.",
+  kw: ["damage", "check-in", "check in", "inspection", "scratch", "dent", "existing damage", "condition", "handover", "report", "photo"] };
