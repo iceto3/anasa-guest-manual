@@ -1,0 +1,80 @@
+# Topics outline (ordered stern to bow)
+
+- Dinghy & Outboard
+  - How to lower the dinghy
+  - How to start the dinghy engine
+  - Refuelling the outboard
+  - Where the fuel canister is kept
+  - Troubleshooting the outboard
+- Stern underwater (diagram)
+  - Picture or diagram of the underwater stern showing where the propellers and rudders are
+  - Warning: the propellers sit far back, so keep ropes, lines and the dinghy painter out of the water near the stern
+  - Where the emergency tiller is kept
+  - How to install and use the emergency tiller (with photos and video)
+- Fenders
+  - 12 in total: 8 cylindrical, 2 big ball fenders, 2 small ball fenders
+  - Photo of each fender type
+  - Video: how to tie the fenders to the stern with two lines
+- Sailing
+  - Video: how to open the rope clutches (jammers) on the "piano" properly
+  - Video: how to unfurl the genoa properly
+  - Guide: how to reef the sails (from the boat's owner manual)
+- Helm Station
+  - Video: overview of the helm station and its parts
+  - Video: the chart plotter
+  - Video: how to start the engines
+  - Video: the instruments
+- Galley & Gas
+  - Main gas switches
+  - How to turn on the oven
+  - How to turn on the burners
+  - Salt water tap
+  - Fresh water tap
+- Main Saloon
+  - Where the saloon light switches are (hard to find, show with a photo)
+  - Storage in the main saloon
+  - Under the saloon couch: flares, bosun chair, first aid kit, three life jackets, flags, toolbox
+- Safety
+  - Where the fire extinguishers are located
+  - Where the rest of the life jackets are located
+  - Where the life raft is located
+  - Where the EPIRB is located
+  - How to use the EPIRB
+  - How to use the VHF radio
+  - Mayday call: example script to read out
+- Comfort & Entertainment
+  - How to use the audio system
+- Electrical Panel (with photos and videos)
+  - All the lights
+  - Fridge
+  - Fresh water pump
+  - Salt water pump
+  - Bilge pump switches (on the main electrical panel)
+  - Inverter (located beneath the electrical panel)
+  - Generator panel (located beneath the electrical panel)
+- Water Maker
+  - How to use the water maker
+  - Where to use it and where not to
+- Toilets
+  - How to use the toilets
+  - What not to do
+- Kitchenware & Breakages
+  - Photos of all cutlery, bowls, dishes and glasses
+  - Report a breakage: guests tap the item type and how many broke (no charge, just so we can replace them for the next group)
+  - You get a WhatsApp notification as soon as a breakage is reported
+- Owner Settings (hidden, charter company only)
+  - Hidden owner area: open with five quick taps on the logo, then a PIN
+  - WhatsApp number for breakage reports
+  - Other owner-only settings (to be added)
+- Anchoring
+  - How to use the anchor
+  - Putting on the snubber line
+  - Putting on the bridle
+- In the Marina: Tanks, Water & Power
+  - Where the fresh water tank intake (filler) is
+  - Where the diesel tank intake (filler) is
+  - Where the shore power (electrical) cable is kept
+  - Where the water hose is kept
+  - Where the spare hose connectors are kept
+  - Mooring lines: how many, how long, and where they are kept
+  - Floating lines: how many, how long, and where they are kept

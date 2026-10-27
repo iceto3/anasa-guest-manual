@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f7f4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anasa Manual">
+  <title>Anasa Experiences · Isla 40 Guest Manual</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="favicon-64.png" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav" id="nav">
+    <button class="icon-btn" id="backBtn" aria-label="Back" hidden></button>
+    <button class="brand" id="brand" aria-label="Anasa Experiences">
+      <img class="logo" src="logo-badge.png" alt="Anasa Experiences" width="1024" height="1024">
+    </button>
+    <div class="nav-title" id="navTitle"></div>
+    <a class="sos" href="#/emergency" aria-label="Emergency"><span class="sos-dot"></span>SOS</a>
+  </header>
+  <main id="app" tabindex="-1"></main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
