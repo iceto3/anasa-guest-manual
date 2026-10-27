@@ -48,6 +48,7 @@ BOATS.anasa = {
       { id: "damage-checkin", type: "form", special: "damage", icon: "clipboard" }   // v9: shown as its own home card, not a tile
     ] },
     { id: "contact", group: "contact", icon: "chat", topics: [
+      { id: "chat", type: "form", special: "chat", icon: "chat" },   // v10: in-app chat (#/chat), shown as its own card
       { id: "report-problem", type: "form", special: "problem", icon: "wrench" },
       { id: "ask", type: "form", special: "ask", icon: "chat" },
       { id: "feedback", type: "form", special: "feedback", icon: "star" }

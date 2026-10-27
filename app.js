@@ -1,4 +1,5 @@
-/* Anasa Guest Manual — v9 (dark theme + damage check-in). Vanilla JS, no build step, works offline.
+/* Anasa Guest Manual — v10 (in-app chat + push, dark theme, damage check-in). Vanilla JS, no build step, works offline.
+ * chat.js (loaded after this file) adds the guest ↔ base chat and Web Push; boot() runs once both are loaded.
  *
  * DATA (loaded before this file, see index.html):
  *   config.js        APP_CONFIG (default boat/language, languages, message language, owner PIN, api)
@@ -324,8 +325,9 @@ function renderHomeBody() {
     ${stay ? `<div class="sec-head"><h2>${esc(stay.name)}</h2><span>${esc(BOAT.name)}</span></div>
     <div class="tiles">${stay.topics.filter(x => x.special !== "damage").map(x => `<a class="tile" href="#/t/${x.id}"><span class="ic">${ic(tIcon(x))}</span>
       <span class="t">${esc(x.short || x.title)}</span><span class="m">${stayMeta(x)}</span></a>`).join("")}</div>` : ""}
-    ${contact.length ? `<div class="sec-head"><h2>${esc(t("contactUs"))}</h2><span>${esc(t("viaWhatsApp"))}</span></div>
-    <ul class="list">${contact.map(x => `<li><a class="row" href="#/t/${x.id}"><span class="ic">${ic(tIcon(x))}</span>
+    ${contact.length ? `<div class="sec-head"><h2>${esc(t("contactUs"))}</h2><span>${esc(t("contactSub"))}</span></div>
+    ${typeof chatCardHtml === "function" && API ? chatCardHtml() : ""}
+    <ul class="list contact-list">${contact.map(x => `<li><a class="row" href="#/t/${x.id}"><span class="ic">${ic(tIcon(x))}</span>
       <span class="tx"><span class="t">${esc(x.short || x.title)}</span><span class="m">${esc(x.summary || "")}</span></span>
       <span class="chev">${ic("chev")}</span></a></li>`).join("")}</ul>` : ""}
     <div class="sec-head"><h2>${esc(t("sections"))}</h2><span>${esc(t("sternToBow"))}</span></div>
@@ -336,6 +338,7 @@ function renderHomeBody() {
     ${BOAT.gallery?.length ? `<div class="sec-head"><h2>${esc(t("onBoard"))}</h2><span>${esc(BOAT.name)}</span></div>
     <div class="gallery">${BOAT.gallery.map(g => `<figure><img src="${g.src}" alt="${esc(local(g.caption))}" loading="lazy" decoding="async"><figcaption>${esc(local(g.caption))}</figcaption></figure>`).join("")}</div>` : ""}
     <p class="foot">${esc(t("footer"))}</p>`;
+  if (typeof refreshChatCard === "function") refreshChatCard();
 }
 
 /* ---------- Section ---------- */
@@ -502,7 +505,8 @@ function bindProblem() {
   };
 }
 function askUI() {
-  return `<div class="block"><h2>${esc(t("askLabel"))}</h2><textarea class="textarea tall" id="aText" placeholder="${esc(t("askPh"))}"></textarea></div>${sendBlock("sendAsk")}`;
+  return `<div class="block"><h2>${esc(t("askLabel"))}</h2><textarea class="textarea tall" id="aText" placeholder="${esc(t("askPh"))}"></textarea></div>${sendBlock("sendAsk")}
+    ${API ? `<a class="chat-card slim" href="#/chat"><span class="ci">${ic("chat")}</span><span class="tx"><b>${esc(t("askChatTitle"))}</b><small>${esc(t("askChatSub"))}</small></span><span class="chev">${ic("chev")}</span></a>` : ""}`;
 }
 function bindAsk() {
   document.getElementById("sendAsk").onclick = () => {
@@ -649,7 +653,8 @@ function secretTap() {
   if (taps.length >= 5) { taps = []; location.hash = "#/owner"; }
 }
 $brand.addEventListener("click", secretTap);
-let ownerUnlocked = false;
+let ownerUnlocked = (() => { try { return sessionStorage.getItem("owner:unlocked") === "1"; } catch { return false; } })();   // v10: survives reloads in this tab only
+const setOwnerUnlocked = v => { ownerUnlocked = v; try { v ? sessionStorage.setItem("owner:unlocked", "1") : sessionStorage.removeItem("owner:unlocked"); } catch {} };
 function viewOwner() {
   if (!ownerUnlocked) return viewPin();
   setNav({ mode: "page", title: t("ownerSettings") });
@@ -658,6 +663,8 @@ function viewOwner() {
   $app.innerHTML = `
     <div class="page-head"><div class="sec-ic">${ic("gear")}</div><div class="eyebrow">${esc(t("ownerOnly"))}</div><h1>${esc(t("ownerSettings"))}</h1>
       <p>${esc(t("ownerHidden"))}</p></div>
+    ${ownerKeyUI()}
+    ${typeof ownerChatsUI === "function" ? ownerChatsUI() : ""}
     <div class="block"><h2>${esc(t("waHead"))}</h2><div class="card">
       <div class="field"><label for="wa">${esc(t("waLabel"))}</label>
         <input id="wa" type="tel" inputmode="tel" autocomplete="off" placeholder="${esc(c.ownerWhatsApp)}" value="${esc(waOverride())}">
@@ -681,8 +688,10 @@ function viewOwner() {
     toast(t("saved")); viewOwner();
   };
   document.getElementById("resetOwner").onclick = () => { store.del(WA_KEY); store.del("owner:whatsapp"); toast(t("saved")); viewOwner(); };
-  document.getElementById("lockOwner").onclick = () => { ownerUnlocked = false; location.hash = "#/"; };
+  document.getElementById("lockOwner").onclick = () => { setOwnerUnlocked(false); location.hash = "#/"; };
+  bindOwnerKey();
   bindOwnerDamage();
+  if (typeof bindOwnerChats === "function") bindOwnerChats();
 }
 function viewPin() {
   setNav({ mode: "page", title: t("ownerAccess") });
@@ -697,7 +706,7 @@ function viewPin() {
   $app.querySelectorAll("[data-d]").forEach(b => b.onclick = () => {
     if (pin.length >= 4) return; pin += b.dataset.d; $msg.textContent = ""; $dots.classList.remove("err"); draw();
     if (pin.length === 4) setTimeout(() => {
-      if (pin === CFG.ownerPin) { ownerUnlocked = true; viewOwner(); }
+      if (pin === CFG.ownerPin) { setOwnerUnlocked(true); route(false); }
       else { $dots.classList.add("err"); $msg.textContent = t("incorrectPin"); pin = ""; draw(); }
     }, 150);
   });
@@ -736,7 +745,7 @@ $themeBtn?.addEventListener("click", cycleTheme);
  * Draft (localStorage damage:<boat>:draft) → photos in IndexedDB (never uploaded yet) → POST /api/reports (Worker + D1)
  * → WhatsApp summary + optional navigator.share of the photos. Offline: the report waits in the IndexedDB "queue".
  * Data model: kind "checkin" now, "checkout" later. Photo upload later = PUT /api/reports/:id/photos/:photoId (see worker/README). */
-const APP_VERSION = "anasa-manual-v9";
+const APP_VERSION = "anasa-manual-v10";
 const API = (CFG.api && CFG.api.base || "").replace(/\/+$/, "");
 const DMG_TYPES = ["scratch", "dent", "torn", "stain", "notWorking", "missing", "other"];
 const ZONES = ["bowPort", "bowStbd", "hullPort", "hullStbd", "sternPort", "sternStbd", "trampoline", "deck", "coachroof", "saloon",
@@ -1139,11 +1148,20 @@ window.addEventListener("online", () => flushQueue());
 /* Owner: damage reports from the Worker */
 const OKEY = "owner:apiKey";
 const ownerKey = () => store.get(OKEY, "") || (CFG.api && CFG.api.ownerKey) || "";
-function ownerDamageUI() {
-  return `<div class="block" id="ownerDmg"><h2>${esc(t("dmgReports"))} <span class="prog">${esc(BOAT.name)}</span></h2>
+function ownerKeyUI() {   // v10: one owner key for damage reports, chats and notifications
+  return `<div class="block" id="ownerKeyBlock"><h2>${esc(t("ownerKey"))}</h2>
     <div class="card"><div class="field"><label for="okey">${esc(t("ownerKey"))}</label>
       <input id="okey" type="password" autocomplete="off" spellcheck="false" value="${esc(ownerKey())}">
-      <div class="help">${esc(t("ownerKeyHelp"))}</div></div></div>
+      <div class="help">${esc(t("ownerKeyHelp"))}</div></div></div></div>`;
+}
+function bindOwnerKey() {
+  const $k = document.getElementById("okey");
+  $k.addEventListener("change", () => { const v = $k.value.trim(); if (v === ownerKey()) return;   // no re-render → taps elsewhere aren't lost
+    if (v) store.set(OKEY, v); else store.del(OKEY);
+    if (typeof loadOwnerChats === "function") { inboxSig = ""; loadOwnerChats().catch(() => {}); } loadOwnerReports(); });
+}
+function ownerDamageUI() {
+  return `<div class="block" id="ownerDmg"><h2>${esc(t("dmgReports"))} <span class="prog">${esc(BOAT.name)}</span></h2>
     <div class="block row2 tight"><button class="btn" id="loadReports">${esc(t("loadReports"))}</button><button class="btn ghost" id="refreshReports">${esc(t("refresh"))}</button></div>
     <p class="note warnnote">${ic("photo")}<span>${esc(t("photosDeviceNote"))}</span></p>
     <div id="reportList"></div></div>`;
@@ -1182,8 +1200,15 @@ function bindOwnerDamage() {
 /* ---------- Router ---------- */
 function route(scrollTop = true) {
   closeSheet();
-  const [, view, id] = (location.hash || "#/").replace(/^#/, "").split("/");
+  if (typeof stopPolling === "function") stopPolling();
+  document.body.classList.remove("chat-mode");
+  const [, view, id, sub] = (location.hash || "#/").replace(/^#/, "").split("/");
+  const tp = view === "t" && topicById(id);
+  if (tp && tp.special === "chat") { location.replace("#/chat"); return; }
   if (!view) viewHome();
+  else if (view === "chat" && id === "setup") viewChatSetup();
+  else if (view === "chat") viewChat();
+  else if (view === "owner" && id === "chat" && sub) viewOwnerThread(sub);
   else if (view === "s") viewSection(id);
   else if (view === "t") viewTopic(id);
   else if (view === "emergency") viewEmergency();
@@ -1203,7 +1228,9 @@ window.addEventListener("scroll", onScroll, { passive: true });
 $back.addEventListener("click", () => (history.length > 1 ? history.back() : (location.hash = "#/")));
 window.addEventListener("hashchange", () => route());
 
-buildModel(); renderChrome(); applyTheme(); route();
-window.addEventListener("load", () => setTimeout(() => flushQueue(), 1200));
+function boot() { buildModel(); renderChrome(); applyTheme(); route(); }
+// v10: chat.js is loaded after app.js — boot once every script has run
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+window.addEventListener("load", () => setTimeout(() => { flushQueue(); if (typeof flushChat === "function") flushChat(); }, 1200));
 
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(() => {}));

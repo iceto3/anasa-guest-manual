@@ -50,3 +50,5 @@ CREATE TABLE IF NOT EXISTS report_photos (
   uploaded_at  TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_photos_report ON report_photos (report_id);
+
+-- v10 chat + push tables: see migrations/0002_chat.sql

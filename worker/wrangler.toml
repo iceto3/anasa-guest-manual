@@ -1,5 +1,6 @@
 # Anasa guest manual API (damage check-in reports). No secrets in this file.
 # Owner key: set with `wrangler secret put OWNER_KEY` (basic protection only).
+# Push private key: `wrangler secret put VAPID_PRIVATE_KEY` (see README).
 name = "anasa-manual-api"
 main = "src/index.js"
 compatibility_date = "2026-10-27"
@@ -9,7 +10,11 @@ preview_urls = false
 
 [vars]
 ALLOWED_ORIGINS = "https://iceto3.github.io"
-API_VERSION = "1"
+API_VERSION = "2"
+# v10 Web Push (VAPID). The public key is not secret; the private key is a Worker secret:
+#   wrangler secret put VAPID_PRIVATE_KEY      (base64url 32-byte P-256 private scalar)
+VAPID_PUBLIC_KEY = "BL2QTbSdgxUOgx99JAzJ7BgWVKa_QmIGEJZeinr8RbVwbTjro5AlH2bteBusHhFBaaCGaFuoBfB7JXnVhL4QQlo"
+VAPID_SUBJECT = "https://iceto3.github.io/anasa-guest-manual/"
 
 [[d1_databases]]
 binding = "DB"

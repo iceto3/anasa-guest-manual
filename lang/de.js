@@ -280,3 +280,39 @@ Object.assign(I18N.de.ui, {
 I18N.de.topics["damage-checkin"] = { title: "Check-in: vorhandene Schäden notieren", short: "Schadens-Check-in",
   summary: "Markieren Sie zu Beginn Ihrer Charterwoche alle bereits vorhandenen Schäden — damit später niemand dafür belastet wird.",
   kw: ["schaden", "schäden", "check-in", "übernahme", "prüfung", "kratzer", "delle", "zustand", "protokoll", "foto"] };
+
+/* ---------- v10: Chat in der App + Benachrichtigungen ---------- */
+Object.assign(I18N.de.ui, {
+  contactSub: "Chat · WhatsApp", chatCardTitle: "Chat mit der Basis", chatCardSub: "Schreiben Sie dem Anasa-Team direkt hier in der App",
+  chatUnread_one: "{n} neue Nachricht", chatUnread_other: "{n} neue Nachrichten", chatYouPrefix: "Sie: ", chatBasePrefix: "Basis: ",
+  askChatTitle: "Lieber in der App chatten?", askChatSub: "Öffnen Sie den Chat mit der Basis — Antworten kommen hier an",
+  chatTitle: "Chat mit der Basis", chatPeer: "{boat}-Basis", chatEdit: "Angaben ändern",
+  chatSetupText: "Sagen Sie uns, wer Sie sind und in welcher Charterwoche, damit die Basis weiß, um welchen Charter es geht.",
+  chatEnded: "Ihr vorheriger Chat ({w}) ist beendet. Starten Sie einen neuen für diesen Charter.",
+  chatName: "Ihr Name", chatFromDamage: "Aus Ihrem Schadens-Check-in übernommen.", chatStart: "Chat starten",
+  chatNotEmergency: "Nicht für Notfälle — nutzen Sie [[#/emergency|SOS]] oder rufen Sie die Basis an.",
+  chatPreferWa: "Lieber WhatsApp?", chatOpenWa: "Per WhatsApp fragen",
+  chatOffline: "Sie sind offline. Nachrichten werden gesendet, sobald Sie wieder verbunden sind.",
+  chatPh: "Nachricht", chatSend: "Senden", chatLeft: "noch {n}", chatTooLong: "Maximal {n} Zeichen",
+  chatToday: "Heute", chatYesterday: "Gestern",
+  st_sending: "Wird gesendet…", st_queued: "Wartet auf Verbindung", st_sent: "Gesendet", st_read: "Gelesen", st_failed: "Nicht gesendet · tippen zum Wiederholen",
+  chatTextOnly: "Vorerst nur Text — für Fotos bitte WhatsApp nutzen.",
+  chatWelcome: "Hallo {name}! Schreiben Sie uns hier, das Team der {boat}-Basis antwortet in diesem Chat.",
+  notifTitle: "Benachrichtigen, wenn die Basis antwortet", notifText: "Erhalten Sie eine Benachrichtigung auf diesem Handy, wenn das Basis-Team antwortet.",
+  notifOn: "Einschalten", notifLater: "Nicht jetzt", notifEnabled: "Benachrichtigungen sind auf diesem Handy an", notifOff: "Ausschalten",
+  notifOffDone: "Benachrichtigungen ausgeschaltet", notifTest: "Test senden", notifTestSent_one: "Test an {n} Gerät gesendet", notifTestSent_other: "Test an {n} Geräte gesendet",
+  notifBlocked: "Benachrichtigungen sind blockiert. Erlauben Sie sie für diese Seite in den Browser- oder Handy-Einstellungen.",
+  notifUnsupported: "Dieser Browser unterstützt keine Benachrichtigungen.", notifFailed: "Benachrichtigungen konnten nicht eingeschaltet werden",
+  iosHintTitle: "iPhone: App zuerst zum Home-Bildschirm hinzufügen",
+  iosHintText: "Auf dem iPhone funktionieren Benachrichtigungen nur in der installierten App (ab iOS 16.4), nicht in einem Safari-Tab.",
+  iosStep1: "In Safari auf Teilen tippen", iosStep2: "„Zum Home-Bildschirm“ wählen", iosStep3: "Anasa vom Home-Bildschirm öffnen und hier Benachrichtigungen einschalten",
+  iosInstalled: "Auf dem Home-Bildschirm installiert — Benachrichtigungen können eingeschaltet werden.",
+  chatsHead: "Chats", chatsNone: "Noch keine Chats.", chatsUnread_one: "{n} ungelesen", chatsUnread_other: "{n} ungelesen",
+  chatsFailed: "Chats konnten nicht geladen werden ({e}).", needKeyChats: "Geben Sie oben den Eigentümer-Schlüssel ein, um die Gäste-Chats zu sehen.", chatNoMsgs: "Noch keine Nachrichten",
+  ownerNotifHead: "Benachrichtigungen", ownerNotifTitle: "Neue Gäste-Nachrichten", ownerNotifText: "Push-Benachrichtigung auf diesem Gerät, wenn ein Gast schreibt.",
+  ownerEnableNotif: "Benachrichtigungen aktivieren", replyPh: "Antwort an {name}",
+  chatDelete: "Löschen", chatDeleteConfirm: "Diesen Chat mit allen Nachrichten löschen?", chatDeleted: "Chat gelöscht", chatGone: "Diesen Chat gibt es nicht mehr."
+});
+I18N.de.topics["chat"] = { title: "Chat mit der Basis", short: "Chat",
+  summary: "Schreiben Sie dem Team der Anasa-Basis in der App und erhalten Sie hier Antworten.",
+  kw: ["chat", "nachricht", "basis", "kontakt", "hilfe", "frage", "antwort", "benachrichtigungen"] };

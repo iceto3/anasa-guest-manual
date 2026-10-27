@@ -298,3 +298,39 @@ Object.assign(I18N.en.ui.msg, {
 I18N.en.topics["damage-checkin"] = { title: "Check-in: note existing damage", short: "Damage check-in",
   summary: "At the start of your charter week, mark any damage that is already there — so nobody is charged for it later.",
   kw: ["damage", "check-in", "check in", "inspection", "scratch", "dent", "existing damage", "condition", "handover", "report", "photo"] };
+
+/* ---------- v10: in-app chat + notifications ---------- */
+Object.assign(I18N.en.ui, {
+  contactSub: "Chat · WhatsApp", chatCardTitle: "Chat with the base", chatCardSub: "Message the Anasa team right here in the app",
+  chatUnread_one: "{n} new message", chatUnread_other: "{n} new messages", chatYouPrefix: "You: ", chatBasePrefix: "Base: ",
+  askChatTitle: "Prefer to chat in the app?", askChatSub: "Open the chat with the base — replies arrive right here",
+  chatTitle: "Chat with the base", chatPeer: "{boat} base", chatEdit: "Edit details",
+  chatSetupText: "Tell us who you are and your charter week, so the base team knows which charter you're on.",
+  chatEnded: "Your previous chat ({w}) has ended. Start a new one for this charter.",
+  chatName: "Your name", chatFromDamage: "Filled in from your damage check-in.", chatStart: "Start chat",
+  chatNotEmergency: "Not for emergencies — use [[#/emergency|SOS]] or call the base.",
+  chatPreferWa: "Prefer WhatsApp?", chatOpenWa: "Ask on WhatsApp",
+  chatOffline: "You're offline. Messages will be sent when you're back online.",
+  chatPh: "Message", chatSend: "Send", chatLeft: "{n} left", chatTooLong: "Max {n} characters",
+  chatToday: "Today", chatYesterday: "Yesterday",
+  st_sending: "Sending…", st_queued: "Waiting for connection", st_sent: "Sent", st_read: "Read", st_failed: "Not sent · tap to retry",
+  chatTextOnly: "Text only for now — for photos use WhatsApp.",
+  chatWelcome: "Hi {name}! Write to us here and the {boat} base team will reply in this chat.",
+  notifTitle: "Notify me when the base replies", notifText: "Get a notification on this phone when the base team answers.",
+  notifOn: "Turn on", notifLater: "Not now", notifEnabled: "Notifications are on for this phone", notifOff: "Turn off",
+  notifOffDone: "Notifications turned off", notifTest: "Send test", notifTestSent_one: "Test sent to {n} device", notifTestSent_other: "Test sent to {n} devices",
+  notifBlocked: "Notifications are blocked. Allow them for this site in your browser or phone settings.",
+  notifUnsupported: "This browser can't show notifications.", notifFailed: "Couldn't turn on notifications",
+  iosHintTitle: "iPhone: add the app to your Home Screen first",
+  iosHintText: "On iPhone, notifications only work in the installed app (iOS 16.4 or later), not in a Safari tab.",
+  iosStep1: "In Safari, tap Share", iosStep2: "Choose “Add to Home Screen”", iosStep3: "Open Anasa from your Home Screen and turn on notifications here",
+  iosInstalled: "Installed on your Home Screen — notifications can be turned on.",
+  chatsHead: "Chats", chatsNone: "No chats yet.", chatsUnread_one: "{n} unread", chatsUnread_other: "{n} unread",
+  chatsFailed: "Couldn't load chats ({e}).", needKeyChats: "Enter the owner key above to see guest chats.", chatNoMsgs: "No messages yet",
+  ownerNotifHead: "Notifications", ownerNotifTitle: "New guest messages", ownerNotifText: "Get a push notification on this device when a guest writes.",
+  ownerEnableNotif: "Enable notifications", replyPh: "Reply to {name}",
+  chatDelete: "Delete", chatDeleteConfirm: "Delete this chat and all its messages?", chatDeleted: "Chat deleted", chatGone: "This chat no longer exists."
+});
+I18N.en.topics["chat"] = { title: "Chat with the base", short: "Chat",
+  summary: "Message the Anasa base team inside the app and get replies here.",
+  kw: ["chat", "message", "base", "manager", "contact", "help", "question", "reply", "talk", "notifications"] };

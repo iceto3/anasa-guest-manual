@@ -8,9 +8,12 @@
  *   PUT    /api/reports/:id/photos/:photoId      photo upload — returns 501 until an R2 bucket is bound as PHOTOS
  *   GET    /api/photos/:photoId                  owner photo download  (X-Owner-Key, needs R2)
  *
+ *   v10 chat + Web Push routes (/api/chats…, /api/push…): see chat.js
+ *
  * Security is basic on purpose: CORS allow-list, input validation, size limits, a per-IP rate limit and a shared
  * owner key (secret OWNER_KEY) for the owner endpoints. It is not real authentication.
  */
+import { handleChat, pushEnabled } from "./chat.js";
 const KINDS = ["checkin", "checkout"];
 const TYPES = ["scratch", "dent", "torn", "stain", "notWorking", "missing", "other"];
 const VIEWS = ["top", "stbd", "port"];
@@ -32,7 +35,7 @@ function corsHeaders(origin) {
   return origin ? {
     "access-control-allow-origin": origin, "vary": "Origin",
     "access-control-allow-methods": "GET,POST,PUT,DELETE,OPTIONS",
-    "access-control-allow-headers": "content-type,x-owner-key",
+    "access-control-allow-headers": "content-type,x-owner-key,x-chat-token",
     "access-control-max-age": "86400"
   } : { "vary": "Origin" };
 }
@@ -143,7 +146,7 @@ async function loadReports(env, where, binds, limit) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url), origin = req.headers.get("origin");
     const okOrigin = allowedOrigin(origin, env), cors = corsHeaders(okOrigin);
     if (origin && !okOrigin) return err(403, "origin", "Origin not allowed");
@@ -152,7 +155,15 @@ export default {
     if (parts[0] !== "api") return err(404, "not_found", "Not found", cors);
     try {
       if (parts[1] === "health" && req.method === "GET")
-        return json({ ok: true, service: "anasa-manual-api", version: env.API_VERSION || "1", photoUpload: env.PHOTOS ? "enabled" : "disabled" }, 200, cors);
+        return json({ ok: true, service: "anasa-manual-api", version: env.API_VERSION || "1", photoUpload: env.PHOTOS ? "enabled" : "disabled",
+          chat: true, push: pushEnabled(env) ? "enabled" : "disabled" }, 200, cors);
+
+      if (parts[1] === "chats" || parts[1] === "push") {
+        const h = { cors, json: (d, s = 200, x = {}) => json(d, s, { ...cors, ...x }), err: (s, c, m, x = {}) => err(s, c, m, { ...cors, ...x }),
+          ownerOk: () => ownerOk(req, env), ipHash: async () => (await sha256Hex("anasa:" + (req.headers.get("cf-connecting-ip") || "0.0.0.0"))).slice(0, 24) };
+        const res = await handleChat(req, env, ctx, url, parts, h);
+        if (res) return res;
+      }
 
       if (parts[1] === "reports" && parts.length === 2) {
         if (req.method === "POST") return await createReport(req, env, cors);

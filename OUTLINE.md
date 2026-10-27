@@ -98,7 +98,9 @@
     pick a type (scratch, dent/ding, torn, stain, not working, missing, other), an auto-suggested area, a short note and optional photos;
     items without a location; finish with name, charter week and "I inspected the boat…", then saved online + WhatsApp summary
   - (Later) Check-out damage report, same flow with kind "checkout"
-- Contact us (all open WhatsApp to the owner with a prefilled message)
+- Contact us
+  - Chat with the base (in the app, v10): text chat with the base manager, read ticks, offline queue, push notifications (iPhone: Home Screen app, iOS 16.4+)
+  - WhatsApp fallbacks below (all open WhatsApp to the owner with a prefilled message)
   - Report a breakage (no charge, just so we can replace it)
   - Report a problem (category + description)
   - Ask a question

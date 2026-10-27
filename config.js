@@ -20,5 +20,9 @@ window.APP_CONFIG = {
     base: "https://anasa-manual-api.vidrichka.workers.dev",
     ownerKey: "",
     timeoutMs: 8000
+  },
+  /* v10: Web Push for the in-app chat. VAPID PUBLIC key only (not secret); the private key is a Worker secret. */
+  push: {
+    vapidPublicKey: "BL2QTbSdgxUOgx99JAzJ7BgWVKa_QmIGEJZeinr8RbVwbTjro5AlH2bteBusHhFBaaCGaFuoBfB7JXnVhL4QQlo"
   }
 };

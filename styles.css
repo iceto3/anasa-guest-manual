@@ -502,7 +502,7 @@ body{transition:background-color .25s,color .25s}
 .thumbs-mini{flex:none;align-self:center}
 .thumbs-mini img{width:44px;height:44px;border-radius:10px;object-fit:cover;display:block}
 .empty.small{padding:18px 18px;font-size:14.5px;line-height:1.45}
-.empty.err{color:var(--red-ink)}
+#chatList .empty.err,.msgs .empty.err{color:var(--red-ink)}
 .add-noloc{display:flex;align-items:center;gap:14px;width:100%;margin-top:10px;padding:14px 16px;border:1.5px dashed var(--ring);border-radius:var(--r-lg);background:none;
   color:var(--ink);font:inherit;text-align:left;cursor:pointer}
 .add-noloc > svg.i{width:22px;height:22px;flex:none;color:var(--accent-ink)}
@@ -587,3 +587,121 @@ a.btn svg.i,.btn svg.i{width:20px;height:20px}
 :root[data-theme="dark"] .seg button[aria-selected="true"]{box-shadow:0 1px 2px rgba(0,0,0,.4),0 0 0 1px var(--line)}
 :root[data-theme="dark"] .pin{box-shadow:0 0 0 2.5px var(--map-water),0 4px 10px rgba(0,0,0,.5)}
 :root[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.85)}
+
+/* ---------- v10: in-app chat ---------- */
+:root{--bub-me:#9c5428;--bub-me-ink:#ffffff;--bub-them:var(--surface);--bub-them-ink:var(--ink);--chat-bg:var(--bg);--read:#2f7fd1}
+:root[data-theme="dark"]{--bub-me:#e3905d;--bub-me-ink:#1b0e06;--bub-them:#1a2a3f;--bub-them-ink:var(--ink);--read:#7cc0ff}
+body.chat-mode{padding-bottom:0}
+body.chat-mode .foot,body.chat-mode .toolbar{display:none}
+.chat{display:flex;flex-direction:column;min-height:calc(100dvh - 70px - var(--sat));margin:0 -20px}
+.chat-head{position:sticky;top:calc(70px + var(--sat));z-index:20;display:flex;align-items:center;gap:12px;padding:10px 20px 12px;
+  background:var(--nav-bg);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--line)}
+.chat-head .tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.chat-head .tx b{font-size:16px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-head .tx small{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:650;font-size:15px;letter-spacing:.02em;
+  background:var(--accent-soft);color:var(--accent-ink)}
+.av.base{background:var(--panel);box-shadow:0 0 0 1px var(--line)}
+.av.base img{width:28px;height:auto;display:block}
+.chip-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;border:0;background:var(--surface);
+  box-shadow:0 0 0 1px var(--line);font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);cursor:pointer;flex:none}
+.chip-btn svg.i{width:16px;height:16px}
+.chip-btn.danger{color:var(--red-ink)}
+.chat-offline{display:flex;align-items:center;gap:8px;margin:10px 20px 0;padding:9px 12px;border-radius:var(--r-sm);background:var(--tag-bg);color:var(--tag-ink);font-size:13px}
+.chat-offline svg.i{width:18px;height:18px}
+.msgs{flex:1;display:flex;flex-direction:column;gap:2px;padding:14px 14px 10px}
+.msgs .empty{margin:30px 6px}
+.sys{display:flex;gap:8px;align-items:flex-start;align-self:center;max-width:92%;margin:4px 0 14px;padding:9px 13px;border-radius:var(--r-sm);
+  background:var(--soft);color:var(--muted);font-size:12.5px;line-height:1.45}
+.sys svg.i{width:16px;height:16px;margin-top:1px}
+.sys a{color:var(--accent-ink);font-weight:600;text-decoration:none}
+.day{align-self:center;margin:12px 0 8px;font-size:12px;font-weight:600;color:var(--muted)}
+.day span{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--soft)}
+.msg{display:flex;flex-direction:column;max-width:80%;margin-top:8px}
+.msg.cont{margin-top:2px}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.msg.them{align-self:flex-start;align-items:flex-start}
+.bubble{padding:9px 14px;border-radius:20px;font-size:15.5px;line-height:1.42;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+.msg.me .bubble{background:var(--bub-me);color:var(--bub-me-ink);border-bottom-right-radius:6px}
+.msg.them .bubble{background:var(--bub-them);color:var(--bub-them-ink);box-shadow:var(--shadow);border-bottom-left-radius:6px}
+.msg.me.cont .bubble{border-top-right-radius:6px}
+.msg.them.cont .bubble{border-top-left-radius:6px}
+.bubble a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.msg.welcome .bubble{background:var(--accent-soft);color:var(--ink);box-shadow:none}
+.msg.failed .bubble{opacity:.7;cursor:pointer}
+.meta{display:flex;align-items:center;gap:4px;margin:3px 6px 0;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+.st{display:inline-flex;align-items:center;gap:4px}
+.st svg.i{width:15px;height:15px;stroke-width:1.8}
+.st.read{color:var(--read)}
+.st.fail{color:var(--red-ink);font-weight:600}
+.st.q svg.i{width:13px;height:13px}
+.composer{position:sticky;bottom:0;z-index:20;display:flex;align-items:flex-end;gap:10px;padding:10px 14px calc(10px + var(--sab));
+  background:var(--nav-bg);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-top:1px solid var(--line)}
+.cbox{flex:1;min-width:0;position:relative;display:flex;background:var(--surface);border-radius:22px;box-shadow:0 0 0 1px var(--line)}
+.cbox:focus-within{box-shadow:0 0 0 1.5px var(--accent)}
+.cbox textarea{flex:1;min-width:0;border:0;background:transparent;resize:none;outline:none;font:inherit;font-size:16px;line-height:1.4;color:var(--ink);
+  padding:11px 16px;max-height:150px;min-height:44px}
+.cbox textarea::placeholder{color:var(--faint)}
+.cbox .left{position:absolute;right:12px;top:-20px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cbox .left.over{color:var(--red-ink);font-weight:600}
+.send{width:44px;height:44px;border-radius:50%;border:0;flex:none;display:grid;place-items:center;background:var(--bub-me);color:var(--bub-me-ink);cursor:pointer;
+  transition:transform .12s,opacity .15s}
+.send:disabled{background:var(--disabled);color:var(--on-solid);opacity:.85;cursor:default}
+.send:not(:disabled):active{transform:scale(.92)}
+.send svg.i{width:21px;height:21px;stroke-width:1.8}
+#chatNotif:not(:empty){padding:0 14px 12px}
+
+/* notification opt-in card (guest + owner) */
+.notif-card{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:14px 16px}
+.nc-head{display:flex;align-items:center;gap:12px}
+.nc-head .ci,.chat-card .ci{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--accent-soft);color:var(--accent-ink);position:relative}
+.nc-head .tx,.chat-card .tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.nc-head .tx b{font-size:15px;font-weight:650}
+.nc-head .tx small{font-size:13px;color:var(--muted)}
+.nc-msg{margin:10px 0 0;font-size:13.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.nc-msg.ok{color:var(--ok-ink)}
+.nc-msg svg.i{width:16px;height:16px}
+.nc-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn.sm{height:42px;width:auto;flex:1;padding:0 16px;font-size:14.5px;gap:8px}
+.btn.sm svg.i{width:18px;height:18px}
+.ios-hint{margin-top:12px;padding:12px 14px;border-radius:var(--r-md);background:var(--soft);font-size:13.5px}
+.ios-hint > b{display:flex;align-items:center;gap:8px;font-size:14px}
+.ios-hint > b svg.i{width:18px;height:18px;color:var(--accent-ink)}
+.ios-hint p{margin:6px 0 8px;color:var(--muted)}
+.ios-hint ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.ios-hint li{display:flex;gap:10px;align-items:center}
+.ios-hint .n{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--solid);color:var(--on-solid);font-size:12px;font-weight:700}
+.kbd{display:inline-grid;place-items:center;width:26px;height:24px;border-radius:7px;background:var(--surface);box-shadow:0 0 0 1px var(--line);vertical-align:middle;margin-left:2px;color:var(--read)}
+.kbd svg.i{width:16px;height:16px}
+
+/* home + ask: chat entry card */
+.chat-card{display:flex;align-items:center;gap:14px;padding:16px 16px 16px 18px;margin:0 0 12px;border-radius:var(--r-lg);text-decoration:none;
+  background:var(--panel);color:#fff;box-shadow:var(--shadow)}
+.chat-card .ci{width:44px;height:44px;background:var(--bub-me);color:#fff}
+:root[data-theme="dark"] .chat-card{box-shadow:var(--shadow),inset 0 0 0 1px rgba(255,255,255,.06)}
+:root[data-theme="dark"] .chat-card .ci{color:#1b0e06}
+.chat-card .tx b{font-size:16.5px;font-weight:650;letter-spacing:-.01em}
+.chat-card .tx small{font-size:13.5px;line-height:1.35;color:rgba(255,255,255,.72);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.chat-card .tx small.unread{color:#ffd2b4;font-weight:600}
+.chat-card .chev{color:rgba(255,255,255,.55);display:grid}
+.chat-card .dot{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2.5px var(--panel)}
+.badge{min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--red);color:#fff;font-size:12px;font-weight:700;display:inline-grid;place-items:center;flex:none;font-style:normal}
+.chat-card.slim{margin-top:18px;background:var(--surface);color:var(--ink)}
+.chat-card.slim .tx small{color:var(--muted)}
+.chat-card.slim .chev{color:var(--chev)}
+
+/* owner inbox */
+.convs .conv{display:flex;align-items:center;gap:12px;padding:13px 16px;text-decoration:none;color:var(--ink)}
+.convs .conv:active{background:var(--press)}
+.convs li + li::before{left:70px}
+.conv .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.conv .top,.conv .bot{display:flex;align-items:center;gap:8px;min-width:0}
+.conv .top b{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv .top time{font-size:12px;color:var(--faint);flex:none}
+.conv .pv{flex:1;min-width:0;font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv.has-unread .top b{font-weight:700}
+.conv.has-unread .pv{color:var(--ink);font-weight:500}
+.conv.has-unread .top time{color:var(--accent-ink);font-weight:600}
+#chatList .empty.small,.msgs .empty.small{padding:18px 16px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+#chatList .empty.err,.msgs .empty.err{color:var(--red-ink)}
+.warnnote{color:var(--tag-ink)}
