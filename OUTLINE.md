@@ -78,3 +78,24 @@
   - Where the spare hose connectors are kept
   - Mooring lines: how many, how long, and where they are kept
   - Floating lines: how many, how long, and where they are kept
+
+---
+
+# Guest info (not part of the stern-to-bow tour; shown first on the home screen)
+
+- Emergency & SOS (big SOS card on home + red SOS button in the header)
+  - Send SOS with my location to the owner on WhatsApp (press-and-hold to confirm; GPS lat/lon, Google Maps link, accuracy, time)
+  - Call 112 (European emergency number) and 108 (Hellenic Coast Guard)
+  - Call the charter base
+  - Boat ID: name, call sign, MMSI (placeholders until confirmed)
+  - VHF channel 16 guidance and the Mayday script with the boat details filled in
+- Your stay
+  - Wi-Fi: network name and password with copy buttons (placeholders)
+  - Check-in & check-out: times (placeholders) and what to expect (draft)
+  - House rules on board (draft)
+  - Local tips: bays, tavernas, provisions, weather (example placeholders only)
+- Contact us (all open WhatsApp to the owner with a prefilled message)
+  - Report a breakage (no charge, just so we can replace it)
+  - Report a problem (category + description)
+  - Ask a question
+  - End-of-charter feedback (1–5 stars + comments)

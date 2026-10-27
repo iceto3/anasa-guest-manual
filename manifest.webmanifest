@@ -1,7 +1,7 @@
 {
-  "name": "Anasa Experiences · Isla 40 Guest Manual",
+  "name": "Anasa Experiences · Anasa Guest Manual",
   "short_name": "Anasa Manual",
-  "description": "Offline guest manual for your Fountaine Pajot Isla 40 charter catamaran, by Anasa Experiences.",
+  "description": "Offline guest manual for Anasa, a Fountaine Pajot Isla 40 charter catamaran by Anasa Experiences. English, Ελληνικά, Български, Deutsch.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -9,9 +9,29 @@
   "background_color": "#f7f7f4",
   "theme_color": "#0e1b2c",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

@@ -1,0 +1,252 @@
+/* English — default language. Copy this file to add a language (see README.md).
+ * Markup in strings: **bold**, __spoken phrase__, [[topic-id|link text]], {variables}.
+ * Plurals: key_one / key_other (Intl.PluralRules). Missing keys fall back to English. */
+I18N.en = {
+  code: "en", name: "English", short: "EN", locale: "en-GB",
+  ui: {
+    appTitle: "{boat} Guest Manual", guestManual: "Guest manual", welcome: "Welcome aboard",
+    language: "Language", back: "Back",
+    searchPlaceholder: "Search the manual", clearSearch: "Clear search",
+    results_one: "{n} result for “{q}”", results_other: "{n} results for “{q}”",
+    noResults: "Nothing found. Try “dinghy”, “gas” or “Wi-Fi”.",
+    sections: "Sections", sternToBow: "Stern to bow", topics_one: "{n} topic", topics_other: "{n} topics",
+    onBoard: "On board", footer: "Available offline · Prototype",
+    yourStay: "Your stay", contactUs: "Contact us", viaWhatsApp: "Via WhatsApp",
+    sosCardTitle: "Emergency & SOS", sosCardSub: "Call for help, VHF 16, Mayday, send your location",
+    sectionOf: "Section {i} of {n}",
+    type_guide: "Guide", type_video: "Video", type_photo: "Photos", type_diagram: "Diagram", type_location: "Location",
+    type_warning: "Warning", type_info: "Info", type_script: "Script", type_form: "Report",
+    kind_video: "Video", kind_photo: "Photo", kind_diagram: "Diagram",
+    steps_one: "{n} step", steps_other: "{n} steps", ready: "Ready", comingSoon: "Coming soon",
+    videoSoon: "Video coming soon", diagramSoon: "Diagram coming soon", photoSoon: "Photo coming soon",
+    warning: "Warning", whatsIn: "What's in there", beforeStart: "Before you start", steps: "Steps",
+    tapStep: "Tap a step to tick it off.", safetyTips: "Safety tips", progress: "{a} of {b}",
+    contentSoon: "Content coming soon", contentSoonText: "We're still writing this one. Your check-in skipper can show you on board.",
+    nextIn: "Next in {s}", placeholder: "Placeholder", draft: "Draft", example: "Example", mock: "Mockup",
+    notFound: "Page not found", backToManual: "Back to the manual",
+
+    // Mayday
+    maydayHead: "Read out on VHF ch 16",
+    mayday: [
+      "Switch the VHF to **channel 16**, high power. Press and hold the talk button.",
+      "Say __“Mayday, Mayday, Mayday”__",
+      "__“This is {boat}, {boat}, {boat}”__ — call sign **{callSign}**, MMSI **{mmsi}**",
+      "__“Mayday {boat}, call sign {callSign}, MMSI {mmsi}”__",
+      "__“My position is …”__ — latitude and longitude from the chart plotter, or bearing and distance from a landmark.",
+      "Say **what's wrong** (fire, sinking, man overboard, injury) and that you need immediate assistance.",
+      "Say **how many people** are on board, and that you are a white catamaran ({model}).",
+      "Say __“Over”__, let go of the button and listen. Repeat every 2–3 minutes if there's no answer."
+    ],
+    maydayHint: "Template script — to be confirmed by the charter base. Mayday is only for grave and imminent danger.",
+
+    // Emergency screen
+    emergency: "Emergency", stayCalm: "Stay calm.\nHelp is close.", lifejacketsOn: "Make sure everyone is wearing a life jacket.",
+    sosSend: "Send SOS with my location", sosSendSub: "Opens WhatsApp to the owner with your GPS position",
+    sosNote: "This alerts the boat owner, not the coast guard. In immediate danger call 112 or use VHF channel 16 first.",
+    call112: "Call 112", eu112: "European emergency number", call108: "Call 108", coastGuard: "Hellenic Coast Guard",
+    callBase: "Call the {base}", maydayVhf: "Mayday on VHF", maydaySub: "Script with your boat details",
+    yourBoat: "Your boat", boatName: "Boat name", callSign: "Call sign", mmsi: "MMSI", model: "Model",
+    vhfHead: "VHF channel 16",
+    vhfTips: [
+      "Channel 16 is the international distress, safety and calling channel. The coast guard and ships nearby listen to it.",
+      "Use **Mayday** only for grave and imminent danger to the boat or people. For urgent but not life-threatening problems, start with **“Pan-Pan”** three times instead.",
+      "Keep the VHF switched on and on channel 16 while you're under way.",
+      "Questions, breakdowns or advice? Call the base by phone, not on channel 16."
+    ],
+    moreHelp: "More help", safety: "Safety",
+    // SOS confirmation sheet
+    sosConfirmTitle: "Send SOS to the owner?",
+    sosConfirmText: "We'll read your GPS position and open WhatsApp with an SOS message ready to send. You still need to tap Send in WhatsApp.",
+    holdToSend: "Hold to send SOS", holdHint: "Press and hold for 2 seconds", cancel: "Cancel", close: "Close",
+    locating: "Getting your location…", locFailed: "Location unavailable — sending without it",
+    waOpened: "WhatsApp should now be open. Tap Send.", openWaAgain: "Open WhatsApp again",
+
+    // Wi-Fi / stay
+    wifiNetwork: "Network", wifiPassword: "Password", copy: "Copy", copied: "Copied", copyFailed: "Couldn't copy — long-press to select",
+    wifiHint: "Wi-Fi details are placeholders until the owner confirms them.",
+    checkIn: "Check-in", checkOut: "Check-out", from: "from {t}", by: "by {t}", rules: "Good to know",
+
+    // Reports & forms
+    sendWa: "Send via WhatsApp", waNote: "Opens WhatsApp with your message ready — just tap Send.",
+    opening: "Opening WhatsApp…", needText: "Please write a few words first", needRating: "Tap a star to rate",
+    whatBroke: "What broke?", note: "Note", optional: "Optional", notePh: "e.g. dropped a glass in the cockpit",
+    sendReport: "Send report", noCharge: "No charge — this just helps us replace them for the next group.",
+    fewer: "Fewer {x}", more: "More {x}",
+    item_cutlery: "Cutlery", item_bowls: "Bowls", item_dishes: "Dishes", item_glasses: "Glasses",
+    problemCategory: "What's it about?", problemDetails: "What happened?", problemPh: "Describe the problem, where it is and since when",
+    cat_engine: "Engines", cat_electrics: "Electrics & batteries", cat_water: "Water & pumps", cat_toilet: "Toilets",
+    cat_gas: "Gas & galley", cat_sails: "Sails & rigging", cat_dinghy: "Dinghy & outboard", cat_anchor: "Anchor & windlass",
+    cat_other: "Something else",
+    dangerHint: "Is anyone in danger? Use [[#/emergency|Emergency]] instead.",
+    askLabel: "Your question", askPh: "Ask us anything about the boat, the area or your charter",
+    rateLabel: "How was your charter?", star_one: "{n} star", star_other: "{n} stars",
+    commentsLabel: "Comments", commentsPh: "What did you love? What could we do better?",
+    nameLabel: "Your name", feedbackThanks: "Thank you — it really helps us.",
+
+    // Owner settings
+    ownerOnly: "Owner only", ownerSettings: "Owner settings", ownerHidden: "Hidden from guests. Saved on this device.",
+    waHead: "WhatsApp reports", waLabel: "Owner WhatsApp number",
+    waHelp: "Breakage and problem reports, questions, feedback and SOS messages open WhatsApp to this number. Leave empty to use the boat config default ({def}).",
+    save: "Save", saved: "Saved", useDefault: "Use default", invalidNumber: "Enter a full number with country code, e.g. +30 69…",
+    inUse: "In use: {n}", configHead: "Boat config", configNote: "Read-only here. Edit boats/{id}.js — values tagged Mockup are placeholders.",
+    moreOwnerSoon: "More owner settings coming", moreOwnerSoonText: "Base phone, Wi-Fi and content editing will live here.",
+    lock: "Lock", ownerAccess: "Owner access", enterPin: "Enter your 4-digit PIN", incorrectPin: "Incorrect PIN", del: "Delete",
+
+    // Messages the owner receives (used for messageLang)
+    msg: {
+      breakage: "Breakage report — {boat}", problem: "Problem report — {boat}", question: "Question — {boat}",
+      feedback: "Charter feedback — {boat}", category: "Category", note: "Note", rating: "Rating", name: "Name",
+      guestLang: "Guest language", sos: "🆘 SOS — {boat} needs help", callSign: "Call sign", position: "Position",
+      accuracy: "accuracy ±{m} m", map: "Map", time: "Time", noLocation: "Location unavailable ({reason}). Please call us.",
+      sosFooter: "Sent from the {boat} guest manual. Please call us back."
+    }
+  },
+
+  sections: {
+    stay: { name: "Your stay" }, contact: { name: "Contact us" },
+    dinghy: { name: "Dinghy & Outboard" }, stern: { name: "Stern underwater", subtitle: "Diagram" },
+    fenders: { name: "Fenders" }, sailing: { name: "Sailing" }, helm: { name: "Helm Station" },
+    galley: { name: "Galley & Gas" }, saloon: { name: "Main Saloon" }, safety: { name: "Safety" },
+    comfort: { name: "Comfort & Entertainment" }, electrics: { name: "Electrical Panel", subtitle: "With photos and videos" },
+    watermaker: { name: "Water Maker" }, toilets: { name: "Toilets" }, kitchenware: { name: "Kitchenware & Breakages" },
+    anchoring: { name: "Anchoring" }, marina: { name: "In the Marina", subtitle: "Tanks, water & power" }
+  },
+
+  topics: {
+    // Your stay
+    "wifi": { title: "Wi-Fi", short: "Wi-Fi", summary: "Network name and password.", kw: ["wifi", "wi-fi", "internet", "password", "network", "router"] },
+    "checkin": { title: "Check-in & check-out", short: "Check-in & out", summary: "Times and what to expect.",
+      kw: ["check-in", "check in", "check-out", "check out", "arrival", "departure", "time", "keys"],
+      items: [
+        "Check-in includes a briefing on board with the skipper (about an hour).",
+        "Running late? Message us on WhatsApp so we can plan around you.",
+        "Before check-out: rubbish off the boat, dishes washed and the fridge emptied.",
+        "Leave keys, the dinghy and all safety equipment where you found them.",
+        "Please report anything broken or not working before you leave — [[breakage|Report a breakage]]."
+      ] },
+    "house-rules": { title: "House rules on board", short: "House rules", summary: "A few simple rules so everyone has a great time.",
+      kw: ["rules", "house rules", "shoes", "smoking", "quiet", "water", "rubbish"],
+      items: [
+        "Bare feet or clean soft-soled shoes on board — no street shoes.",
+        "No smoking below deck.",
+        "Only toilet paper in the toilets — nothing else ([[toilet-dont|What not to do]]).",
+        "Fresh water is limited: short showers and taps off when you're done.",
+        "Turn the gas off at the main switch after cooking ([[gas-switches|Main gas switches]]).",
+        "Children wear life jackets on deck at all times.",
+        "No swimming near the stern while the engines are running.",
+        "Keep it quiet in anchorages and marinas late at night.",
+        "Nothing goes overboard — take rubbish ashore."
+      ] },
+    "local-tips": { title: "Local tips", short: "Local tips", summary: "Bays, tavernas and our favourite spots.",
+      kw: ["tips", "bays", "beach", "taverna", "restaurant", "food", "swim", "anchorage", "shopping"],
+      tips: [
+        { tag: "Bay", title: "A sheltered swimming bay", text: "Name, depth, holding and best wind direction — coming soon." },
+        { tag: "Taverna", title: "A seaside taverna", text: "Our favourite local spot and what to order — coming soon." },
+        { tag: "Provisions", title: "Where to stock up", text: "Supermarket, bakery and fresh fish near the base — coming soon." },
+        { tag: "Weather", title: "Wind & weather", text: "How to read the local forecast and when to stay in port — coming soon." }
+      ] },
+    // Contact
+    "report-problem": { title: "Report a problem on the boat", short: "Report a problem", summary: "Something not working? Tell us and we'll help.",
+      kw: ["problem", "broken", "not working", "fault", "repair", "issue", "help", "whatsapp"] },
+    "ask": { title: "Ask us a question", short: "Ask a question", summary: "Anything about the boat, the area or your charter.",
+      kw: ["question", "ask", "help", "contact", "whatsapp", "message"] },
+    "feedback": { title: "End-of-charter feedback", short: "Feedback", summary: "Tell us how it went.",
+      kw: ["feedback", "review", "rating", "stars", "comments"] },
+
+    // Manual (stern → bow)
+    "lower-dinghy": { title: "How to lower the dinghy",
+      kw: ["dinghy", "tender", "davit", "davits", "lower", "launch", "painter", "swim platform"],
+      media: ["Photo of your davits goes here"],
+      before: [
+        "Only lower it when the boat is stopped, at anchor or on a mooring, with the engines in neutral or off.",
+        "Make sure nobody is swimming behind the boat or standing on the swim platforms.",
+        "Check that the dinghy's drain plug is in and the outboard is tilted up."
+      ],
+      steps: [
+        "Tie a painter (bow line) from the dinghy to a stern cleat so it can't drift away once it's in the water.",
+        "Take off any safety straps or lashings that hold the dinghy to the davits.",
+        "Ease the two davit lines off their cleats, keeping a turn on each one so you stay in control.",
+        "Lower both ends evenly, a little at a time, so the dinghy stays level. If one end drops faster, stop and even it out.",
+        "Once it's floating, let a bit more line out so the hooks go slack.",
+        "Climb in from the swim platform, holding the davit or the grab rail, and unhook both lifting points.",
+        "Tidy the davit lines and cleat them off so they don't swing around or end up in the water.",
+        "Lower the outboard and start it ([[start-outboard|Starting the dinghy engine]])."
+      ],
+      safety: [
+        "Never stand underneath the dinghy while it's hanging.",
+        "Keep your fingers clear of the blocks and cleats while the line is running.",
+        "In swell or wind, lower it on the sheltered side and get a second person to hold the painter."
+      ] },
+    "start-outboard": { title: "How to start the dinghy engine", kw: ["outboard", "dinghy", "engine", "start", "motor"] },
+    "refuel-outboard": { title: "Refuelling the outboard", kw: ["fuel", "petrol", "gasoline", "refuel", "outboard"] },
+    "fuel-canister": { title: "Where the fuel canister is kept", kw: ["fuel", "canister", "jerrycan", "petrol", "outboard"] },
+    "outboard-trouble": { title: "Troubleshooting the outboard", kw: ["outboard", "won't start", "problem", "troubleshoot", "dinghy"] },
+    "stern-diagram": { title: "Underwater stern: propellers and rudders",
+      summary: "Picture or diagram of the underwater stern showing where the propellers and rudders are.",
+      kw: ["propeller", "propellers", "rudder", "rudders", "stern", "underwater", "diagram"],
+      media: ["Underwater stern diagram — propellers & rudders"] },
+    "prop-warning": { title: "Keep ropes clear of the propellers", kw: ["propeller", "rope", "line", "painter", "stern", "warning", "fouled"],
+      callout: "The propellers sit far back, so keep ropes, lines and the dinghy painter out of the water near the stern." },
+    "tiller-location": { title: "Where the emergency tiller is kept", kw: ["emergency tiller", "tiller", "steering", "rudder"] },
+    "tiller-use": { title: "How to install and use the emergency tiller", kw: ["emergency tiller", "tiller", "steering failure", "rudder"],
+      media: ["Installing the emergency tiller", "Emergency tiller fitted"] },
+    "fender-count": { title: "12 fenders in total", kw: ["fenders", "fender", "cylindrical", "ball", "count", "how many"],
+      stats: ["Fenders in total", "Cylindrical", "Big ball fenders", "Small ball fenders"] },
+    "fender-photos": { title: "Photo of each fender type", kw: ["fenders", "cylindrical", "ball"], media: ["Cylindrical", "Big ball", "Small ball"] },
+    "fender-tie": { title: "How to tie the fenders to the stern with two lines", kw: ["fenders", "tie", "knot", "stern", "lines", "mooring"],
+      media: ["Tying the fenders to the stern with two lines"] },
+    "jammers": { title: "How to open the rope clutches (jammers) on the “piano” properly",
+      kw: ["piano", "jammer", "jammers", "clutch", "clutches", "rope clutch", "lines", "sailing"], media: ["Opening the rope clutches on the piano"] },
+    "genoa": { title: "How to unfurl the genoa properly", kw: ["genoa", "jib", "headsail", "furl", "unfurl", "furler", "sail"], media: ["Unfurling the genoa"] },
+    "reef": { title: "How to reef the sails", summary: "From the boat's owner manual.",
+      kw: ["reef", "reefing", "mainsail", "main", "wind", "sail", "shorten sail", "owner manual"] },
+    "helm-overview": { title: "Overview of the helm station and its parts", kw: ["helm", "steering", "wheel", "controls"], media: ["Helm station overview"] },
+    "plotter": { title: "The chart plotter", kw: ["chart plotter", "plotter", "gps", "navigation", "chart", "position"], media: ["Using the chart plotter"] },
+    "start-engines": { title: "How to start the engines", kw: ["engine", "engines", "start", "ignition", "throttle", "diesel"], media: ["Starting the engines"] },
+    "instruments": { title: "The instruments", kw: ["instruments", "depth", "wind", "speed", "log"], media: ["Reading the instruments"] },
+    "gas-switches": { title: "Main gas switches", kw: ["gas", "switch", "valve", "solenoid", "bottle", "galley"] },
+    "oven": { title: "How to turn on the oven", kw: ["oven", "gas", "cooking", "galley"] },
+    "burners": { title: "How to turn on the burners", kw: ["burner", "burners", "stove", "hob", "cooker", "gas"] },
+    "salt-tap": { title: "Salt water tap", kw: ["salt water", "seawater", "tap", "sink", "galley"] },
+    "fresh-tap": { title: "Fresh water tap", kw: ["fresh water", "tap", "sink", "drinking", "galley"] },
+    "saloon-lights": { title: "Where the saloon light switches are", summary: "They're hard to find — a photo will show you exactly where.",
+      kw: ["lights", "light switch", "switches", "saloon", "lamp"], media: ["Saloon light switches"] },
+    "saloon-storage": { title: "Storage in the main saloon", kw: ["storage", "lockers", "cupboards", "saloon"] },
+    "under-couch": { title: "Under the saloon couch",
+      kw: ["couch", "sofa", "flares", "bosun chair", "first aid", "life jackets", "flags", "toolbox", "tools"],
+      items: ["Flares", "Bosun chair", "First aid kit", "Three life jackets", "Flags", "Toolbox"] },
+    "extinguishers": { title: "Where the fire extinguishers are located", kw: ["fire", "extinguisher", "extinguishers", "safety"] },
+    "lifejackets": { title: "Where the rest of the life jackets are located", kw: ["life jacket", "lifejackets", "life jackets", "pfd", "safety"] },
+    "liferaft": { title: "Where the life raft is located", kw: ["life raft", "liferaft", "raft", "abandon ship", "safety"] },
+    "epirb-where": { title: "Where the EPIRB is located", kw: ["epirb", "beacon", "distress", "safety"] },
+    "epirb-use": { title: "How to use the EPIRB", kw: ["epirb", "beacon", "distress", "activate", "emergency"] },
+    "vhf": { title: "How to use the VHF radio", kw: ["vhf", "radio", "channel 16", "call"] },
+    "mayday": { title: "Mayday call: example script to read out", kw: ["mayday", "vhf", "distress", "emergency", "radio", "channel 16", "sos"] },
+    "audio": { title: "How to use the audio system", kw: ["audio", "music", "speakers", "bluetooth", "stereo", "sound"] },
+    "lights": { title: "All the lights", kw: ["lights", "navigation lights", "anchor light", "panel", "electrics"], media: ["Light switches on the panel", "All the lights"] },
+    "fridge": { title: "Fridge", kw: ["fridge", "refrigerator", "cool", "panel", "electrics"], media: ["Fridge switch", "Fridge"] },
+    "fw-pump": { title: "Fresh water pump", kw: ["fresh water pump", "water pump", "pump", "no water", "panel"], media: ["Fresh water pump switch", "Fresh water pump"] },
+    "sw-pump": { title: "Salt water pump", kw: ["salt water pump", "deck wash", "pump", "panel"], media: ["Salt water pump switch", "Salt water pump"] },
+    "bilge": { title: "Bilge pump switches", summary: "On the main electrical panel.", kw: ["bilge", "bilge pump", "pump", "leak", "panel"], media: ["Bilge pump switches", "Bilge pumps"] },
+    "inverter": { title: "Inverter", summary: "Located beneath the electrical panel.", kw: ["inverter", "220v", "230v", "sockets", "charging", "laptop"], media: ["Inverter", "Using the inverter"] },
+    "generator": { title: "Generator panel", summary: "Located beneath the electrical panel.", kw: ["generator", "genset", "power", "panel"], media: ["Generator panel", "Using the generator"] },
+    "wm-use": { title: "How to use the water maker", kw: ["water maker", "watermaker", "desalinator", "fresh water", "tanks"] },
+    "wm-where": { title: "Where to use it and where not to", kw: ["water maker", "watermaker", "harbour", "marina", "clean water"] },
+    "toilet-use": { title: "How to use the toilets", kw: ["toilet", "toilets", "head", "heads", "wc", "flush"] },
+    "toilet-dont": { title: "What not to do", kw: ["toilet", "blocked", "paper", "don't", "wipes", "head"] },
+    "kw-photos": { title: "Photos of all cutlery, bowls, dishes and glasses", kw: ["cutlery", "bowls", "dishes", "plates", "glasses", "inventory", "kitchenware"],
+      media: ["Cutlery", "Bowls", "Dishes", "Glasses"] },
+    "breakage": { title: "Report a breakage", short: "Report a breakage", summary: "No charge — just so we can replace it.",
+      kw: ["broken", "breakage", "break", "report", "glass", "plate", "damage", "whatsapp"] },
+    "anchor-use": { title: "How to use the anchor", kw: ["anchor", "windlass", "chain", "anchoring", "drop", "raise"] },
+    "snubber": { title: "Putting on the snubber line", kw: ["snubber", "anchor", "chain", "hook", "anchoring"] },
+    "bridle": { title: "Putting on the bridle", kw: ["bridle", "anchor", "chain", "anchoring"] },
+    "fw-filler": { title: "Where the fresh water tank intake (filler) is", kw: ["fresh water", "water tank", "filler", "intake", "fill", "marina", "tanks"] },
+    "diesel-filler": { title: "Where the diesel tank intake (filler) is", kw: ["diesel", "fuel", "filler", "intake", "refuel", "marina", "tanks"] },
+    "shore-power": { title: "Where the shore power (electrical) cable is kept", kw: ["shore power", "power cable", "electric", "electrical", "plug", "marina"] },
+    "water-hose": { title: "Where the water hose is kept", kw: ["water hose", "hose", "fresh water", "marina", "fill"] },
+    "hose-connectors": { title: "Where the spare hose connectors are kept", kw: ["hose connectors", "connector", "adapter", "hose", "marina"] },
+    "mooring-lines": { title: "Mooring lines: how many, how long, and where they are kept", kw: ["mooring lines", "lines", "ropes", "dock lines", "marina", "mooring"] },
+    "floating-lines": { title: "Floating lines: how many, how long, and where they are kept", kw: ["floating lines", "floating line", "lines", "ropes", "marina", "swim line"] }
+  }
+};

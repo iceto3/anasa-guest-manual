@@ -1,10 +1,12 @@
 /* Cache-first service worker: the whole manual works with no signal at sea.
  * Bump VERSION whenever content changes so guests get the update next time they're online. */
-const VERSION = "isla40-manual-v7";
+const VERSION = "anasa-manual-v8";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest",
+                "./config.js", "./lang/en.js", "./lang/el.js", "./lang/bg.js", "./lang/de.js", "./boats/anasa.js",
                 "./icon-192.png", "./icon-512.png", "./icon-maskable-192.png", "./icon-maskable-512.png",
                 "./apple-touch-icon.png", "./favicon-32.png", "./favicon-64.png",
                 "./logo-badge.png", "./logo-white.png", "./logo-white-regular.png", "./logo-black.png", "./fonts/inter.woff2",
+                "./fonts/inter-greek.woff2", "./fonts/inter-cyrillic.woff2",
                 "./img/boat-above.jpg", "./img/boat-headland.jpg", "./img/boat-side.jpg"];
 
 self.addEventListener("install", e => {
